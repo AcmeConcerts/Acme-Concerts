@@ -36,8 +36,10 @@ def remove_single_item_from_cart(request, slug):
 
 class TicketDetailView(DetailView):
     model = Ticket
+    
     template_name = "product.html"
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["MEDIA_URL"] = settings.MEDIA_URL
+        context["tickets"] = Ticket.objects.all()[:3]
         return context

@@ -23,7 +23,7 @@ class Ticket(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("main:product", kwargs={
+        return reverse("main:ticket", kwargs={
             'slug': self.slug
         })
 
