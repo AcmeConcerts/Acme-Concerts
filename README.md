@@ -2,4 +2,4 @@
 
 ## Requirements
 
- - pip install pillow
+ - pip install pillow==9.1.1
