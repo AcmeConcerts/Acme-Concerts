@@ -1,3 +1,4 @@
-
-*.pyc
-*.pyc
+# created by virtualenv automatically
+#Python binaries
+__pycache__/
+.pyc
