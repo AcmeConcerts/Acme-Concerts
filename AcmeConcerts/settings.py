@@ -141,6 +141,9 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 
+ACCOUNT_EMAIL_REQUIRED = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 MEDIA_ROOT = os.path.join(BASE_DIR,'resources')
 
 MEDIA_URL = '/resources/'
