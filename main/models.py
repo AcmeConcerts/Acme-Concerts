@@ -17,7 +17,7 @@ class Ticket(models.Model):
     category = models.CharField(choices=CATEGORY, max_length=2)
     slug = models.SlugField()
     description = models.TextField()
-    image = models.ImageField()
+    image = models.ImageField(upload_to= 'images/tickets/')
 
     def __str__(self):
         return self.title
