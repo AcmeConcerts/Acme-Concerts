@@ -1,0 +1,11 @@
+/*Aquí es para crear el css custom que vayamos a usar */
+
+#search-bar {
+    display: flex;
+    align-self: center;
+
+}
+
+#search-button  {
+    margin-left: 1 rem;
+}
