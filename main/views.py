@@ -11,4 +11,4 @@ def products(request):
     context = {
         'items': Ticket.objects.all()
     }
-    return render(request, "products.html", context)
+    return render(request, "base.html", context)
