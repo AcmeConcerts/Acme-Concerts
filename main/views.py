@@ -43,3 +43,13 @@ class TicketDetailView(DetailView):
         context["MEDIA_URL"] = settings.MEDIA_URL
         context["tickets"] = Ticket.objects.all()[:3]
         return context
+
+class HomeView(ListView):
+    model = Ticket
+    paginate_by = 10
+    template_name = "home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["MEDIA_URL"] = settings.MEDIA_URL
+        return context
