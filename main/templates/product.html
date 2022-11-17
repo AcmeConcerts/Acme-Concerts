@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<main class="mt-5 pt-4">
+  <div class="container dark-grey-text mt-5">
+
+    <!--Grid row-->
+    <div class="row wow fadeIn">
+
+      <!--Grid column-->
+      <div class="col-md-6 mb-4">
+
+        <img src="{{MEDIA_URL}}{{object.image}}" class="img-fluid" alt="">
+      </div>
+      <!--Grid column-->
+
+      <!--Grid column-->
+      <div class="col-md-6 mb-4">
+
+        <!--Content-->
+        <div class="p-4">
+
+          <div class="mb-3">
+            <a href="">
+              <span class="badge bg-danger text-white mr-1">{{object.get_category_display}}</span>
+            </a>
+          </div>
+
+          <p class="lead">
+            {% if object.price_customized %}
+            <span class="text-secondary mr-1">
+              <b>${{ object.price }}</b>
+            </span>
+            <span><b class="text-warning">Premium: ${{ object.price_customized }}</b></span>
+            {% else %}
+            <span>${{ object.price }}</span>
+            {% endif %}
+          </p>
+
+          <p class="lead font-weight-bold">Descripción</p>
+
+          <p>{{ object.description }}</p>
+
+          {% comment %} <form class="d-flex justify-content-left">
+            <!-- Default input -->
+            <input type="number" value="1" aria-label="Search" class="form-control" style="width: 100px">
+            <button class="btn btn-primary btn-md my-0 p" type="submit">
+              Add to cart
+              <i class="fas fa-shopping-cart ml-1"></i>
+            </button>
+
+          </form> {% endcomment %}
+          
+
+        </div>
+        <!--Content-->
+
+      </div>
+      <!--Grid column-->
+
+    </div>
+    <!--Grid row-->
+
+    <hr>
+
+    <!--Grid row-->
+    <div class="row d-flex justify-content-center wow fadeIn">
+
+      <!--Grid column-->
+      <div class="col-md-6 text-center">
+
+        <h4 class="my-4 h4">Información adicional</h4>
+
+        <p>
+          ¿Tienes algún familiar o amigo al que no sabes que regalar? Aprovecha y personaliza una entrada con las herramientas
+          que ponemos a tu disposición.</p>
+        <small class="text-secondary">Las entradas pueden ser adquiridas por el precio estandar en caso de no personalizarse.</small>
+
+      </div>
+      <!--Grid column-->
+
+    </div>
+    <!--Grid row-->
+
+    <!--Grid row-->
+    <div class="row wow fadeIn">
+      {% for ticket in tickets %}
+      <!--Grid column-->
+      
+      <div class="col-lg-4 col-md-12 mb-4">
+        <a href="{{ticket.get_absolute_url}}">
+          <img src="{{MEDIA_URL}}{{ticket.image}}" class="img-fluid" style="height:80%">
+        </a>
+      </div>
+      
+      <!--Grid column-->
+      {% endfor %}
+
+    </div>
+    <!--Grid row-->
+
+  </div>
+</main>
+{% endblock content %}
