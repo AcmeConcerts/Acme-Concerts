@@ -3,9 +3,16 @@
 #search-bar {
     display: flex;
     align-self: center;
+    columns: 2;
+
 
 }
 
 #search-button  {
     margin-left: 1 rem;
 }
+
+#cart   {
+    max-height: 3rem;
+}
+
