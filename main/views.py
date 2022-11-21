@@ -17,6 +17,51 @@ def products(request):
     #TODO
     return render(request, "base.html", context)
 
+def products_reggaeton(request):
+    print(Ticket.objects.values())
+    context = {
+        'items': Ticket.objects.filter(category = 'Rg'),
+        "MEDIA_URL" : settings.MEDIA_URL,
+        "categoria" : "Reggaeton" 
+    }
+    return render(request, "categorias.html", context)
+
+def products_pop(request):
+    print(Ticket.objects.values())
+    context = {
+        'items': Ticket.objects.filter(category = 'P'),
+        "MEDIA_URL" : settings.MEDIA_URL,
+        "categoria" : "Pop" 
+    }
+    return render(request, "categorias.html", context)
+
+def products_indie(request):
+    print(Ticket.objects.values())
+    context = {
+        'items': Ticket.objects.filter(category = 'I'),
+        "MEDIA_URL" : settings.MEDIA_URL,
+        "categoria" : "Indie" 
+    }
+    return render(request, "categorias.html", context)
+
+def products_hiphop(request):
+    print(Ticket.objects.values())
+    context = {
+        'items': Ticket.objects.filter(category = 'HH'),
+        "MEDIA_URL" : settings.MEDIA_URL,
+        "categoria" : "Hip Hop" 
+    }
+    return render(request, "categorias.html", context)
+
+def products_rock(request):
+    print(Ticket.objects.values())
+    context = {
+        'items': Ticket.objects.filter(category = 'r'),
+        "MEDIA_URL" : settings.MEDIA_URL,
+        "categoria" : "Rock" 
+    }
+    return render(request, "categorias.html", context)
+
 @login_required
 def add_to_cart(request, slug):
     #TODO
