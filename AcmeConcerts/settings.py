@@ -152,3 +152,6 @@ ACCOUNT_EMAIL_SUBJECT_PREFIX = ''
 MEDIA_ROOT = os.path.join(BASE_DIR,'resources')
 
 MEDIA_URL = '/resources/'
+
+#STATIC_ROOT = os.path.join(BASE_DIR, 'main/static/')
+#STATIC_URL = '/main/static/'
