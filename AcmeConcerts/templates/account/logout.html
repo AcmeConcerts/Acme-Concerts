@@ -1,0 +1,38 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Sign Out" %}{% endblock %}
+
+{% block content %}
+
+<section class="vh-100" style="background-image: url('https://wallpaperaccess.com/full/1569677.jpg');">
+  <div class="container py-4 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-8">
+        <div class="card" style="background-color: #dfdfdf; opacity:80%; border-radius: 1rem;">
+          
+            <div class="card-body p-4 p-lg-5 text-black" style="display: grid;place-content: center;">
+              <h1>{% trans "Cerrar sesión" %}</h1>
+
+              <p style="margin-left:-2vw;">{% trans '¿Estas seguro que quieres cerrar la sesión?' %}</p>
+              <form method="post" action="{% url 'account_logout' %}">
+                {% csrf_token %}
+                {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                {% endif %}
+                <div class="pt-1 mb-4">
+                  <button class="btn btn-dark btn-lg btn-block primaryAction" type="submit">Salir</button>
+                  <input class="btn btn-dark btn-lg btn-block" style="width: 100px; margin-left:5vw" value="Volver" onClick="history.go(-1);">
+                </div>
+              </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{% endblock %}

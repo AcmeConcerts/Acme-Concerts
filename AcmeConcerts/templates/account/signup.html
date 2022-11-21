@@ -1,0 +1,80 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+
+<section class="vh-200" style="background-color: #dfdfdf;">
+  <div class="container py-4 h-50">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card" style="border-radius: 1rem;">
+          <div class="row g-0">
+            <div class="col-md-6 col-lg-4 d-none d-md-block" >
+              <img style="display:flex; object-fit: cover;width: 100%;height: 100%; "src="https://w0.peakpx.com/wallpaper/131/118/HD-wallpaper-the-weeknd-concert-music-the-weeknd.jpg"
+                alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+            </div>
+            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+              <div class="card-body p-4 p-lg-5 text-black">
+                <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                  {% csrf_token %}
+                  {% if redirect_field_value %}
+                  <ul class="errorList"> </ul>
+                  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                  {% endif %}
+                  <div class="d-flex align-items-center mb-3 pb-1">
+                    <span class="h1 fw-bold mb-0">Acme Concerts</span>
+                  </div>
+                  {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                  {% endif %}
+                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Regístrate</h5>
+
+                  <div class="form-outline mb-4">
+                    <input name="username" type="text" class="form-control form-control-lg" minlenght="1" minlenght="150" required id="id_username" />
+                    <label class="form-label" for="form2Example17">Nombre de usuario</label>
+                  </div>
+
+                  <div class="form-outline mb-4">
+                    <input name="email" type="email" class="form-control form-control-lg" required id="id_email" />
+                    <label class="form-label" for="form2Example17">Email</label>
+                  </div>
+
+                  <div class="form-outline mb-4">
+                    <input name="password1" type="password" autocomplete="new-password" class="form-control form-control-lg" required id="id_password1"/>
+                    <label class="form-label" for="form2Example27">Contraseña</label>
+                  </div>
+
+                  <div class="form-outline mb-4">
+                    <input name="password2" type="password" autocomplete="new-password" class="form-control form-control-lg" required id="id_password2"/>
+                    <label class="form-label" for="form2Example27">Contraseña</label>
+                  </div>
+
+                  <div class="pt-1 mb-4">
+                    <button class="btn btn-dark btn-lg btn-block primaryAction" type="submit">Registrar</button>
+                  </div>
+
+                  <p class="mb-5 pb-lg-2" style="color: #393f81;">¿Ya tienes cuenta? 
+                    <a href="{{ login_url }}" style="color: #393f81;">Inicia sesión</a></p>
+                    <a href="#!" class="small text-muted">Términos de uso.</a>
+                  <a href="#!" class="small text-muted">Política de privacidad</a>
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

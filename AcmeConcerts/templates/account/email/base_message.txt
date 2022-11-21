@@ -1,0 +1,7 @@
+{% load i18n %}{% autoescape off %}¡Hola desde AcmeConcerts!
+
+{% block content %}{% endblock %}
+
+Gracias por usar AcmeConcerts!
+
+{% endautoescape %}

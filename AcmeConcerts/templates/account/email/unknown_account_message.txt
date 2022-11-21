@@ -1,0 +1,12 @@
+{% extends "account/email/base_message.txt" %}
+{% load i18n %}
+
+{% block content %}{% autoescape off %}{% blocktrans %}Está recibiendo este correo electrónico porque usted u otra persona ha solicitado una
+contraseña para su cuenta de usuario. Sin embargo, no tenemos ningún registro de un usuario.
+con correo electrónico {{ email }} en nuestra base de datos.
+
+Este correo se puede ignorar de forma segura si no solicitó restablecer la contraseña.
+
+Si fue usted, puede registrarse para obtener una cuenta utilizando el enlace a continuación.{% endblocktrans %}
+
+{{ signup_url }}{% endautoescape %}{% endblock %}

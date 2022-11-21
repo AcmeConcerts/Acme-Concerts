@@ -23,4 +23,5 @@ urlpatterns = [
     path('', include('main.urls')),
     path('resources/<path>', django.views.static.serve, {'document_root': settings.MEDIA_ROOT}),
     path('admin/', admin.site.urls),
-]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('accounts/', include('allauth.urls')),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
