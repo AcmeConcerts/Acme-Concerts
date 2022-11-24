@@ -10,6 +10,10 @@ from AcmeConcerts.forms import CheckoutForm
 def index(request):
     return render(request, 'cart.html')
 
+class OrderSummaryView(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'cart.html')
+
 class CheckoutView(View):
     def get(self, *args, **kwargs):
         form = CheckoutForm()

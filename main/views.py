@@ -1,9 +1,10 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render,redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, View
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from .models import *
+from django.utils import timezone
 
 # Create your views here.
 
@@ -64,8 +65,22 @@ def products_rock(request):
 
 @login_required
 def add_to_cart(request, slug):
-    #TODO
-    pass
+    ticket = get_object_or_404(Ticket, slug = slug)
+    order_ticket = OrderTicket.objects.create(ticket = ticket)
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order= order_qs[0]
+        #checkea si existe ya en el pedido
+        if order.items.filter(ticket__slug= ticket.slug).exists():
+            order_ticket.quantity += 1
+            order_ticket.save()
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(user= request.user, ordered_date = ordered_date)
+        order.items.add(order_ticket)
+    return redirect("product.html", kwargs={
+        'slug' : slug
+    })
 
 
 @login_required

@@ -38,6 +38,20 @@ class Ticket(models.Model):
         return reverse("main:remove-from-cart", kwargs={
             'slug': self.slug
         })
+
+class OrderTicket(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+class Order(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    tickets = models.ManyToManyField(OrderTicket)
+    start_date = models.DateTimeField(auto_now_add=True)
+    ordered_date = models.DateTimeField()
+    ordered = models.BooleanField(default = False)      
+
+    def __str__(self):
+        return self.user.username
     
 class BillingAddress(models.Model):
     COUNTRY_CHOICES = (
