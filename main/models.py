@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.shortcuts import reverse
 # Create your models here.
 
@@ -38,3 +39,26 @@ class Ticket(models.Model):
             'slug': self.slug
         })
     
+class BillingAddress(models.Model):
+    COUNTRY_CHOICES = (
+    ('E','España'),
+    )
+    CITY_CHOICES = (
+        ('S','Sevilla'),
+        ('A','Almería'),
+        ('H','Huelva'),
+        ('G','Granada'),
+        ('C','Cádiz'),
+        ('CO','Córdoba'),
+    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    firstname = models.CharField(max_length=100)
+    lastname = models.CharField(max_length=100)
+    main_address = models.CharField(max_length=100)
+    optional_address = models.CharField(max_length=100)
+    country = models.CharField(max_length=100,choices=COUNTRY_CHOICES)
+    city = models.CharField(max_length=100,choices=CITY_CHOICES)
+    cp = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.user.username
