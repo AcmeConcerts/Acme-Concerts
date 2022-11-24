@@ -37,3 +37,4 @@ class Ticket(models.Model):
         return reverse("main:remove-from-cart", kwargs={
             'slug': self.slug
         })
+    
