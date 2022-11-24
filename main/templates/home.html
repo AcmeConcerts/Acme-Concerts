@@ -85,15 +85,15 @@
             <div class="card">
 
               <div class="view overlay">
+                <a href="{{ticket.get_absolute_url}}">
                 {% comment %} <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top" {% endcomment %}
                 <img src="{{MEDIA_URL}}{{ticket.image}}" class="card-img-top">
-                <a href="{{ticket.get_absolute_url}}">
-                  <div class="mask rgba-white-slight"></div>
+                
                 </a>
               </div>
 
               <div class="card-body text-center">
-                <a href="">
+                <a href="{{ticket.get_category_display.lower}}">
                     <span class="badge bg-danger text-white mr-1">{{ticket.get_category_display}}</span>
                   </a>
                 
@@ -107,11 +107,12 @@
                 <h5 >
                   <strong>
                     {% if ticket.price %}
-                    <span><b class="text-warning"> {{ ticket.price_customized }}€</b></span>
-                    |
                     <span class="text-secondary mr-1">
-                        <b>{{ ticket.price }}€</b>
-                      </span>
+                      <b>{{ ticket.price }}€</b>
+                    </span>
+                    |
+                    <span><b class="text-warning"> {{ ticket.price_customized }}€</b></span>
+                    
                     {% else %}
                     <span>{{ ticket.price_customized }}€</span>
                     {% endif %}
