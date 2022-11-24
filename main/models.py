@@ -19,6 +19,7 @@ class Ticket(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to= 'images/tickets/')
     date = models.DateTimeField()
+    stock = models.PositiveIntegerField(default=10)
 
     def __str__(self):
         return self.title
