@@ -24,4 +24,5 @@ urlpatterns = [
     path('resources/<path>', django.views.static.serve, {'document_root': settings.MEDIA_ROOT}),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
+    path('cart/', include('cart.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
