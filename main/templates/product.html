@@ -48,6 +48,12 @@
           <p>{{ object.description }}</p>
 
           <form class="d-flex justify-content-left">
+            {%if object.stock == 0%}
+            <a class="btn btn-danger btn-md my-0 p">
+              ENTRADAS AGOTADAS
+              <iconify-icon icon="bi:dash-circle-fill"></iconify-icon>
+            </a>
+            {% else %}
             <a class="btn btn-warning btn-md my-0 p" href="/customize/{{ticket.slug}}">
               Personalizar entrada
               <iconify-icon inline icon="bi:ticket-detailed-fill"></iconify-icon>
@@ -58,7 +64,7 @@
               Añadir al carrito
               <i class="fas fa-shopping-cart ml-1"></i>
             </button>
-
+            {% endif %}
           </form>
           
 

@@ -20,11 +20,17 @@
                     <div class="card">
 
                         <div class="view overlay">
-                            {% comment %} <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top" {% endcomment %}
+                            {% if ticket.stock == 0 %}
+                            <img src="/resources/images/agotado.png" class="card-img-top">
+                            <a href="{{ticket.get_absolute_url}}">
+                                <div class="mask rgba-white-slight"></div>
+                            </a>
+                            {% else %}
                             <img src="{{MEDIA_URL}}{{ticket.image}}" class="card-img-top">
                             <a href="{{ticket.get_absolute_url}}">
-                            <div class="mask rgba-white-slight"></div>
+                                <div class="mask rgba-white-slight"></div>
                             </a>
+                        {% endif %}
                         </div>
 
                         <div class="card-body text-center">
