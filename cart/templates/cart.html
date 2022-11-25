@@ -5,39 +5,39 @@
     <div class="container h-100">
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col">
-          <p><span class="h2">Carrito de la compra </span><span class="h4">(1 elemento en tu carrito)</span></p>
+          <p><span class="h2">Carrito de la compra </span><span class="h4">({{tickets_num}} elemento/s en tu carrito)</span></p>
 
           <div class="card mb-4">
             <div class="card-body p-4">
 
               <div class="row align-items-center">
-                {% for order_titcket in object.tickets.all %}
+                {% for ticket in tickets %}
                 <div class="col-md-2">
-                  <img src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/1.webp"
+                  <img src="{{MEDIA_URL}}{{ticket.ticket.image}}"
                     class="img-fluid" alt="Generic placeholder image">
                 </div>
                 <div class="col-md-2 d-flex justify-content-center">
                   <div>
                     <p class="small text-muted mb-4 pb-2">Nombre</p>
-                    <p class="lead fw-normal mb-0">{{ order_titcket.ticket.title }}</p>
+                    <p class="lead fw-normal mb-0">{{ ticket.ticket.title }}</p>
                   </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center">
                   <div>
                     <p class="small text-muted mb-4 pb-2">Personalizada</p>
-                    <p class="lead fw-normal mb-0">{{ order_titcket.ticket.title }}</p>
+                    <p class="lead fw-normal mb-0">{{ ticket.customized }}</p>
                   </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center">
                   <div>
                     <p class="small text-muted mb-4 pb-2">Cantidad</p>
-                    <p class="lead fw-normal mb-0">{{ order_titcket.quantity }}</p>
+                    <p class="lead fw-normal mb-0">{{ ticket.quantity }}</p>
                   </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center">
                   <div>
                     <p class="small text-muted mb-4 pb-2">Precio</p>
-                    <p class="lead fw-normal mb-0">$799</p>
+                    <p class="lead fw-normal mb-0">{{ ticket.ticket.price }}€</p>
                   </div>
                 </div>
                 {% endfor %}

@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, View
 from django.contrib import messages
 from AcmeConcerts.forms import CheckoutForm
-from main.models import Order
+from main.models import Order, OrderTicket
 from django.contrib.auth.decorators import login_required
 import braintree
 from django.conf import settings
@@ -13,14 +13,20 @@ from django.conf import settings
 def index(request):
     return render(request, 'cart.html')
 
-@login_required
+
 class OrderSummaryView(View):
+    
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user = self.request.user, ordered = False)
+            tickets = OrderTicket.objects.filter(order=order)
             context = {
-                'object' : order
+                'object' : order,
+                'tickets' : tickets,
+                'tickets_num' : len(tickets),
+                'MEDIA_URL' : settings.MEDIA_URL
             }
+            
             return render(self.request, 'cart.html', context)
         except:
             messages.error(self.request, "No tienes ningun pedido activo")
@@ -28,9 +34,30 @@ class OrderSummaryView(View):
         
 
 class CheckoutView(View):
+    
+    
     def get(self, *args, **kwargs):
+        if settings.BRAINTREE_PRODUCTION:
+            braintree_env = braintree.Environment.Production
+        else:
+            braintree_env = braintree.Environment.Sandbox
+
+        # Configure Braintree
+        braintree.Configuration.configure(
+            braintree_env,
+            merchant_id=settings.BRAINTREE_MERCHANT_ID,
+            public_key=settings.BRAINTREE_PUBLIC_KEY,
+            private_key=settings.BRAINTREE_PRIVATE_KEY,
+        )
+    
+        try:
+            braintree_client_token = braintree.ClientToken.generate({ "customer_id": self.user.id })
+        except:
+            braintree_client_token = braintree.ClientToken.generate({})
+
         form = CheckoutForm()
         context = {
+            'braintree_client_token': braintree_client_token,
             'form': form
         }
         return render(self.request, 'checkout.html',context)
@@ -41,32 +68,6 @@ class CheckoutView(View):
             return redirect("cart")
         messages.warning(self.request, "Error en el checkout")
         return redirect("cart")
-
-@login_required
-def checkoutPay(request):
-    #generate all other required data that you may need on the 
-    #checkout page and add them to context.
-    if settings.BRAINTREE_PRODUCTION:
-        braintree_env = braintree.Environment.Production
-    else:
-        braintree_env = braintree.Environment.Sandbox
-
-    # Configure Braintree
-    braintree.Configuration.configure(
-        braintree_env,
-        merchant_id=settings.BRAINTREE_MERCHANT_ID,
-        public_key=settings.BRAINTREE_PUBLIC_KEY,
-        private_key=settings.BRAINTREE_PRIVATE_KEY,
-    )
- 
-    try:
-        braintree_client_token = braintree.ClientToken.generate({ "customer_id": request.user.id })
-    except:
-        braintree_client_token = braintree.ClientToken.generate({})
-
-    context = {'braintree_client_token': braintree_client_token}
-
-    return render(request, 'pay.html', context)
 
 @login_required
 def payment(request):
@@ -86,6 +87,5 @@ def payment(request):
         }
     })
     print(result)
-    print("hola")
-    return HttpResponse('Ok')
+    return redirect("main:home")
 

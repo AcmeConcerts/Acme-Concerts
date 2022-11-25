@@ -2,7 +2,7 @@ from django import forms
 
 PAYMENT_CHOICES = (
     ('T','Pago con tarjeta'),
-    ('P','Paypal')
+    ('C','Contrareembolso')
 )
 
 COUNTRY_CHOICES = (

@@ -1,6 +1,8 @@
 {% extends "base_cart.html" %}
 {% block content %}
 
+<script src="https://js.braintreegateway.com/web/dropin/1.18.0/js/dropin.min.js"></script>
+
 <div class="container">
     <div class="py-5 text-center">
 
@@ -116,13 +118,24 @@
             <div class="d-block my-3">
             {% for value,name in form.fields.payment_option.choices %}
             <div class="custom-control custom-radio">
-                <input id="{{name}}" name="payment_option" value="{{value}}"type="radio" class="custom-control-input" required>
-                <label class="custom-control-label" for="{{name}}"> {{ name }}</label>
+                <input id="{{value}}" name="payment_option" value="{{value}}"type="radio" class="custom-control-input" required>
+                <label class="custom-control-label" for="{{value}}"> {{ name }}</label>
             </div>
             {% endfor %}
             </div>
             <hr class="mb-4">
-            <button class="btn btn-primary btn-lg btn-block" type="submit">Pasarela de Pago</button>
+            <!--<button class="btn btn-primary btn-lg btn-block" type="submit">Pasarela de Pago</button> -->
+            
+            {% if braintree_error %}
+            <div class="alert alert-danger fade in">
+                <button class="close" data-dismiss="alert">&times;</button>
+                {{ braintree_error|safe }}
+            </div>
+        {% endif %}
+        <div class="braintree-notifications"></div>
+        <div id="braintree-dropin"></div>
+        <input style="background-color: #0783ca" id="submit-button" class="btn btn-success btn-lg btn-block" type="button" value="Pagar" />
+
         </form>
         </div>
     </div>
@@ -136,4 +149,48 @@
         </ul>
     </footer>
     </div>
+
+<script>
+    var checkout = $("#braintree-dropin")
+
+    checkout.addClass("hidden")
+
+    $('input:radio[name=payment_option]').change(function() {
+        if ($('#T').is(":checked")) {
+            checkout.removeClass("hidden")
+        }
+        else {
+            checkout.addClass("hidden")
+        }
+    });
+</script>
+<script>
+    var braintree_client_token = "{{ braintree_client_token }}";
+    var button = document.querySelector('#submit-button');
+
+    braintree.dropin.create({
+        authorization: braintree_client_token,
+        container: '#braintree-dropin',
+        locale: 'es_ES',
+        card: {
+        cardholderName: {
+            required: false
+        }
+        }
+    }, function (createErr, instance) {
+        button.addEventListener('click', function () {
+            instance.requestPaymentMethod(function (err, payload) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "payment" %}',
+                    data: {'paymentMethodNonce': payload.nonce,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'}
+                }).done(function (result) {
+                    window.location.href = "/";
+                });
+            });
+        });
+    });
+</script>
+
 {% endblock content %}
