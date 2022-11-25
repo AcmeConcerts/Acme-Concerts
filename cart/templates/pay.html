@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+        <link rel="stylesheet" href="/static/css/bootstrap.min.css" media="screen">
+        <link rel="stylesheet" href="/static/css/styles.css" type="text/css">
+        <link rel="icon" type="image/x-icon" href="/resources/images/logo.png">
+        <script src="https://js.braintreegateway.com/web/dropin/1.18.0/js/dropin.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <style>
+            .button {
+                cursor: pointer;
+                font-weight: 500;
+                left: 3px;
+                line-height: inherit;
+                position: relative;
+                text-decoration: none;
+                text-align: center;
+                border-style: solid;
+                border-width: 1px;
+                border-radius: 3px;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                display: inline-block;
+              }
+              
+              .button--small {
+                padding: 10px 20px;
+                font-size: 0.875rem;
+              }
+              
+              .button--green {
+                outline: none;
+                background-color: #64d18a;
+                border-color: #64d18a;
+                color: white;
+                transition: all 200ms ease;
+              }
+              
+              .button--green:hover {
+                background-color: #8bdda8;
+                color: white;
+              }
+        </style>
+    </head>
+
+    <body>
+        
+
+
+        <form autocomplete="off">
+        {% if braintree_error %}
+            <div class="alert alert-danger fade in">
+                <button class="close" data-dismiss="alert">&times;</button>
+                {{ braintree_error|safe }}
+            </div>
+        {% endif %}
+        <div class="braintree-notifications"></div>
+        <div id="braintree-dropin"></div>
+        <input style="background-color: #0783ca" id="submit-button" class="btn btn-success btn-lg btn-block" type="button" value="Pay now!" />
+        </form>
+        <script>
+            var braintree_client_token = "{{ braintree_client_token }}";
+            var button = document.querySelector('#submit-button');
+        
+            braintree.dropin.create({
+              authorization: braintree_client_token,
+              container: '#braintree-dropin',
+              card: {
+                cardholderName: {
+                    required: false
+                }
+              }
+            }, function (createErr, instance) {
+                button.addEventListener('click', function () {
+                    instance.requestPaymentMethod(function (err, payload) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '{% url "payment" %}',
+                            data: {'paymentMethodNonce': payload.nonce,
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}'}
+                        }).done(function (result) {
+                            window.location.href = "/";
+                        });
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
+
+
