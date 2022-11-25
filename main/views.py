@@ -4,7 +4,6 @@ from django.views.generic import ListView, DetailView, View
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from .models import *
-from django.utils import timezone
 from django.contrib import messages
 # Create your views here.
 
@@ -66,28 +65,30 @@ def products_rock(request):
 @login_required
 def add_to_cart(request, slug):
     ticket = get_object_or_404(Ticket, slug=slug)
-    order_ticket, created = OrderTicket.objects.get_or_create(
+
+    order_qs, order_created = Order.objects.get_or_create(user=request.user, ordered=False)
+    
+
+    order_ticket, created = OrderTicket.objects.get_or_create( #Si lo encuentra, created deberia ser false
         ticket=ticket,
         user=request.user,
-        ordered=False
+        ordered=False,
+        order=order_qs,
+        customized=False
     )
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        # check if the order item is in the order
-        if order.tickets.filter(ticket__slug=ticket.slug).exists():
-            order_ticket.quantity += 1
-            order_ticket.save()
-            messages.info(request, "This item quantity was updated.")
-        else:
-            order.tickets.add(order_ticket)
-            messages.info(request, "This item was added to your cart.")
-    else:
-        ordered_date = timezone.now()
-        order = Order.objects.create(
-            user=request.user, ordered_date=ordered_date)
-        order.tickets.add(order_ticket)
-        messages.info(request, "This item was added to your cart.")
+    print("El created que wea")
+    print(created)
+
+    # check if the order item is in the order
+    if not created:
+        order_ticket.quantity += 1
+        order_ticket.save()
+        messages.info(request, "Cantidad de este ticket actualizada.")
+    else: #Si no estaba se abrá creado, simplemente guardamos
+        order_ticket.save()
+        messages.info(request, "Añadido al carro.")
+
+
     return redirect("main:ticket", slug=slug)
 
 

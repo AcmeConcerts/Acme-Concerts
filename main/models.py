@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.shortcuts import reverse
+from django.utils import timezone
 # Create your models here.
 
 CATEGORY = (
@@ -40,26 +41,29 @@ class Ticket(models.Model):
             'slug': self.slug
         })
 
+
+class Order(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    start_date = models.DateTimeField(auto_now_add=True)
+    ordered_date = models.DateTimeField(default= timezone.now())
+    ordered = models.BooleanField(default = False)      
+
+    def __str__(self):
+        return self.user.username
+
+
 class OrderTicket(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
+    customized = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.quantity} of {self.ticket.title}"
 
-
-class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    tickets = models.ManyToManyField(OrderTicket)
-    start_date = models.DateTimeField(auto_now_add=True)
-    ordered_date = models.DateTimeField()
-    ordered = models.BooleanField(default = False)      
-
-    def __str__(self):
-        return self.user.username
     
 class BillingAddress(models.Model):
     COUNTRY_CHOICES = (
