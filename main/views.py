@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.utils import timezone
-
+from django.contrib import messages
 # Create your views here.
 
 def index(request):
@@ -65,28 +65,58 @@ def products_rock(request):
 
 @login_required
 def add_to_cart(request, slug):
-    ticket = get_object_or_404(Ticket, slug = slug)
-    order_ticket = OrderTicket.objects.create(ticket = ticket)
+    ticket = get_object_or_404(Ticket, slug=slug)
+    order_ticket, created = OrderTicket.objects.get_or_create(
+        ticket=ticket,
+        user=request.user,
+        ordered=False
+    )
     order_qs = Order.objects.filter(user=request.user, ordered=False)
     if order_qs.exists():
-        order= order_qs[0]
-        #checkea si existe ya en el pedido
-        if order.items.filter(ticket__slug= ticket.slug).exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        if order.tickets.filter(ticket__slug=ticket.slug).exists():
             order_ticket.quantity += 1
             order_ticket.save()
+            messages.info(request, "This item quantity was updated.")
+        else:
+            order.tickets.add(order_ticket)
+            messages.info(request, "This item was added to your cart.")
     else:
         ordered_date = timezone.now()
-        order = Order.objects.create(user= request.user, ordered_date = ordered_date)
-        order.items.add(order_ticket)
-    return redirect("product.html", kwargs={
-        'slug' : slug
-    })
+        order = Order.objects.create(
+            user=request.user, ordered_date=ordered_date)
+        order.tickets.add(order_ticket)
+        messages.info(request, "This item was added to your cart.")
+    return redirect("main:ticket", slug=slug)
 
 
 @login_required
 def remove_from_cart(request, slug):
-    #TODO
-    pass
+    ticket = get_object_or_404(Ticket, slug=slug)
+    order_qs = Order.objects.filter(
+        user=request.user,
+        ordered=False
+    )
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        if order.tickets.filter(ticket__slug=ticket.slug).exists():
+            order_ticket = OrderTicket.objects.filter(
+                ticket=ticket,
+                user=request.user,
+                ordered=False
+            )[0]
+            order.tickets.remove(order_ticket)
+            order_ticket.delete()
+            messages.info(request, "This item was removed from your cart.")
+            return redirect("cart")
+        else:
+            messages.info(request, "This item was not in your cart")
+            return redirect("main:ticket", slug=slug)
+    else:
+        messages.info(request, "You do not have an active order")
+        return redirect("main:ticket", slug=slug)
 
 
 @login_required
