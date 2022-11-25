@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+
   <main>
     <div class="container">
 
@@ -82,15 +83,19 @@
             <div class="card">
 
               <div class="view overlay">
-                {% comment %} <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top" {% endcomment %}
-                <img src="{{MEDIA_URL}}{{ticket.image}}" class="card-img-top">
+                {% if ticket.stock == 0 %}
                 <a href="{{ticket.get_absolute_url}}">
-                  <div class="mask rgba-white-slight"></div>
+                  <img src="/resources/images/agotado.png" class="card-img-top">
                 </a>
+                {% else %}
+                <a href="{{ticket.get_absolute_url}}">
+                  <img src="{{MEDIA_URL}}{{ticket.image}}" class="card-img-top">
+                </a>
+                {% endif %}
               </div>
 
               <div class="card-body text-center">
-                <a href="">
+                <a href="{{ticket.get_category_display.lower}}">
                     <span class="badge bg-danger text-white mr-1">{{ticket.get_category_display}}</span>
                   </a>
                 
@@ -104,11 +109,12 @@
                 <h5 >
                   <strong>
                     {% if ticket.price %}
-                    <span><b class="text-warning"> {{ ticket.price_customized }}€</b></span>
-                    |
                     <span class="text-secondary mr-1">
-                        <b>{{ ticket.price }}€</b>
-                      </span>
+                      <b>{{ ticket.price }}€</b>
+                    </span>
+                    |
+                    <span><b class="text-warning"> {{ ticket.price_customized }}€</b></span>
+                    
                     {% else %}
                     <span>{{ ticket.price_customized }}€</span>
                     {% endif %}

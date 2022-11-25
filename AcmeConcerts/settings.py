@@ -13,6 +13,7 @@ import os
 
 import os
 from pathlib import Path
+import sys
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,6 +36,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'main.apps.MainConfig',
+    'customize.apps.CustomizeConfig',
     'cart.apps.CartConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,7 +48,6 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -157,3 +158,12 @@ MEDIA_URL = '/resources/'
 
 #STATIC_ROOT = os.path.join(BASE_DIR, 'main/static/')
 #STATIC_URL = '/main/static/'
+
+if (len(sys.argv) >= 2 and sys.argv[1] == 'runserver'):
+    BRAINTREE_PRODUCTION = False
+else:
+    BRAINTREE_PRODUCTION = True
+
+BRAINTREE_MERCHANT_ID = "bpgn992c5cnbr77p"
+BRAINTREE_PUBLIC_KEY = "r385pxds52d79dh7"
+BRAINTREE_PRIVATE_KEY = "22df5a5944a9ac74230aec5415446781"
