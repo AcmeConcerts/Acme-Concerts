@@ -83,7 +83,7 @@
                             data: {'paymentMethodNonce': payload.nonce,
                                     'csrfmiddlewaretoken': '{{ csrf_token }}'}
                         }).done(function (result) {
-                            window.location.href = "/";
+                            
                         });
                     });
                 });
