@@ -1,5 +1,4 @@
 {% extends "base_cart.html" %}
-
 {% block content %}
 
 <div class="container">
@@ -59,90 +58,55 @@
             </div>
         </form>
         </div>
+
         <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Dirección de envío</h4>
-        <form class="needs-validation" novalidate>
+        
+        <form method="POST">
+            {% csrf_token %}
+
             <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="firstName">Nombre</label>
-                <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
-                <div class="invalid-feedback">
-                Necesitamos un nombre válido.
-                </div>
+                {{ form.firstname }}
             </div>
             <div class="col-md-6 mb-3">
                 <label for="lastName">Apellidos</label>
-                <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
-                <div class="invalid-feedback">
-                Necesitamos un apellido válido.
-                </div>
-            </div>
-            </div>
-
-            <div class="mb-3">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" placeholder="">
-            <div class="invalid-feedback">
-                Introduce un email válido.
+                {{ form.lastname }}
             </div>
             </div>
 
             <div class="mb-3">
             <label for="address">Dirección</label>
-            <input type="text" class="form-control" id="address" placeholder="" required>
-            <div class="invalid-feedback">
-                Introduce una dirección valida
-            </div>
+            {{ form.main_address }}
             </div>
 
             <div class="mb-3">
             <label for="address2">Detalles adicionales <span class="text-muted">(Opcional)</span></label>
-            <input type="text" class="form-control" id="address2" placeholder="">
+            {{ form.optional_address }}            
             </div>
 
             <div class="row">
             <div class="col-md-5 mb-3">
                 <label for="country">País</label>
-                <select class="custom-select d-block w-100" id="country" required>
-                <option value="">Elige...</option>
-                <option>España</option>
-                </select>
-                <div class="invalid-feedback">
-                Selecciona un
-                </div>
+                {{ form.country }}
             </div>
             <div class="col-md-4 mb-3">
                 <label for="state">Ciudad</label>
-                <select class="custom-select d-block w-100" id="state" required>
-                <option value="">Elige...</option>
-                <option>Sevilla</option>
-                <option>Cadiz</option>
-                <option>Malaga</option>
-                <option>Almeria</option>
-                <option>Granada</option>
-                <option>Huelva</option>
-                <option>Cordoba</option>
-                <option>Jaen</option>
-                </select>
-                <div class="invalid-feedback">
-                Introduce una ciudad.
-                </div>
+                {{ form.city }}
             </div>
             <div class="col-md-3 mb-3">
                 <label for="zip">Código Postal</label>
-                <input type="text" class="form-control" id="zip" placeholder="" required>
-                <div class="invalid-feedback">
-                Introduce un código postal.
-                </div>
+                {{ form.cp }}
             </div>
             </div>
             <hr class="mb-4">
             <div class="custom-control custom-checkbox">
-            <input checked type="checkbox" class="custom-control-input" id="same-address">
+            {{ form.same_billing_address }}
             <label class="custom-control-label" for="same-address">Mi dirección de envío es la misma que mi dirección de facturación</label>
             </div>
             <div class="custom-control custom-checkbox">
-            <input checked type="checkbox" class="custom-control-input" id="save-info">
+                {{ form.save_info }}
             <label class="custom-control-label" for="save-info">Guardar información para futuras compras</label>
             </div>
             <hr class="mb-4">
@@ -150,64 +114,25 @@
             <h4 class="mb-3">Métodos de pago</h4>
 
             <div class="d-block my-3">
+            {% for value,name in form.fields.payment_option.choices %}
             <div class="custom-control custom-radio">
-                <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
-                <label class="custom-control-label" for="credit">Credit card</label>
+                <input id="{{name}}" name="payment_option" value="{{value}}"type="radio" class="custom-control-input" required>
+                <label class="custom-control-label" for="{{name}}"> {{ name }}</label>
             </div>
-            <div class="custom-control custom-radio">
-                <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
-                <label class="custom-control-label" for="debit">Debit card</label>
-            </div>
-            <div class="custom-control custom-radio">
-                <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
-                <label class="custom-control-label" for="paypal">PayPal</label>
-            </div>
-            </div>
-            <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="cc-name">Name on card</label>
-                <input type="text" class="form-control" id="cc-name" placeholder="" required>
-                <small class="text-muted">Full name as displayed on card</small>
-                <div class="invalid-feedback">
-                Name on card is required
-                </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="cc-number">Credit card number</label>
-                <input type="text" class="form-control" id="cc-number" placeholder="" required>
-                <div class="invalid-feedback">
-                Credit card number is required
-                </div>
-            </div>
-            </div>
-            <div class="row">
-            <div class="col-md-3 mb-3">
-                <label for="cc-expiration">Expiration</label>
-                <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-                <div class="invalid-feedback">
-                Expiration date required
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="cc-cvv">CVV</label>
-                <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-                <div class="invalid-feedback">
-                Security code required
-                </div>
-            </div>
+            {% endfor %}
             </div>
             <hr class="mb-4">
-            <a class="btn btn-primary btn-lg btn-block" href="/cart/checkout/pay">Continue to checkout</a>    
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Pasarela de Pago</button>
         </form>
         </div>
     </div>
 
     <footer class="my-5 pt-5 text-muted text-center text-small">
-        <p class="mb-1">© 2021 - 2045 Company Name</p>
+        <p class="mb-1">© 2022 - 2023 Acme Concerts</p>
         <ul class="list-inline">
-        <li class="list-inline-item"><a href="#">Privacy</a></li>
-        <li class="list-inline-item"><a href="#">Terms</a></li>
-        <li class="list-inline-item"><a href="#">Support</a></li>
+        <li class="list-inline-item"><a href="#">Privacidad</a></li>
+        <li class="list-inline-item"><a href="#">Términos</a></li>
+        <li class="list-inline-item"><a href="#">Soporte</a></li>
         </ul>
     </footer>
     </div>

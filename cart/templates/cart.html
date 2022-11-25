@@ -11,6 +11,7 @@
             <div class="card-body p-4">
 
               <div class="row align-items-center">
+                {% for order_titcket in object.tickets.all %}
                 <div class="col-md-2">
                   <img src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/1.webp"
                     class="img-fluid" alt="Generic placeholder image">
@@ -18,19 +19,19 @@
                 <div class="col-md-2 d-flex justify-content-center">
                   <div>
                     <p class="small text-muted mb-4 pb-2">Nombre</p>
-                    <p class="lead fw-normal mb-0">iPad Air</p>
+                    <p class="lead fw-normal mb-0">{{ order_titcket.ticket.title }}</p>
                   </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center">
                   <div>
                     <p class="small text-muted mb-4 pb-2">Personalizada</p>
-                    <p class="lead fw-normal mb-0">Si</p>
+                    <p class="lead fw-normal mb-0">{{ order_titcket.ticket.title }}</p>
                   </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center">
                   <div>
                     <p class="small text-muted mb-4 pb-2">Cantidad</p>
-                    <p class="lead fw-normal mb-0">1</p>
+                    <p class="lead fw-normal mb-0">{{ order_titcket.quantity }}</p>
                   </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center">
@@ -39,6 +40,7 @@
                     <p class="lead fw-normal mb-0">$799</p>
                   </div>
                 </div>
+                {% endfor %}
                 <div class="col-md-2 d-flex justify-content-center">
                   <div>
                     <p class="small text-muted mb-4 pb-2">Total</p>
@@ -68,7 +70,7 @@
               <button type="button" class="btn btn-light btn-lg me-2" style="  border: 1px solid gray;">
               Continuar Comprando</button></a>
             <a href="checkout">
-              <button type="button" style="background-color:#ffc107;"class="btn  btn-lg">Pasarela de Pago</button>
+              <button type="button" style="background-color:#ffc107;"class="btn  btn-lg">Terminar pedido</button>
             </a>
           </div>
 
