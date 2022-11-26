@@ -76,8 +76,6 @@ def add_to_cart(request, slug):
         order=order_qs,
         customized=False
     )
-    print("El created que wea")
-    print(created)
 
     # check if the order item is in the order
     if not created:
@@ -102,14 +100,14 @@ def remove_from_cart(request, slug):
     if order_qs.exists():
         order = order_qs[0]
         # check if the order item is in the order
-        if order.tickets.filter(ticket__slug=ticket.slug).exists():
-            order_ticket = OrderTicket.objects.filter(
+        ordered_tickets = OrderTicket.objects.filter(order=order)
+        if ordered_tickets.filter(ticket=ticket).exists():
+            ordered_ticket = OrderTicket.objects.filter(
                 ticket=ticket,
                 user=request.user,
                 ordered=False
             )[0]
-            order.tickets.remove(order_ticket)
-            order_ticket.delete()
+            ordered_ticket.delete()
             messages.info(request, "This item was removed from your cart.")
             return redirect("cart")
         else:
