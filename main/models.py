@@ -13,6 +13,7 @@ CATEGORY = (
 )
 
 class Ticket(models.Model):
+    ordering = ['-slug']
     title = models.CharField(max_length=100)
     price = models.FloatField()
     price_customized = models.FloatField()

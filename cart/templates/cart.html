@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-
 {% block content %}
+
   <section class="vh-100">
     <div class="container h-100">
       <div class="row d-flex justify-content-center align-items-center h-80">
@@ -37,7 +37,7 @@
                         {% endif %}
                         </td>
                       <td style="text-align: center; vertical-align: middle;">
-                        <input style="text-align: center; width:40px;" type="number" value="{{ ticket.quantity }}" min="1" max="100">
+                        <input name="{{ ticket.ticket.slug }}" style="text-align: center; width:40px;" type="number" value="{{ ticket.quantity }}" min="1" max="100">
                         <br>
                         <a href="{% url 'main:remove-from-cart' ticket.ticket.slug%}">Eliminar</a>
                         
@@ -79,4 +79,19 @@
       </div>
     </div>
   </section>
+
+  <script>
+    $('[type=number]').change(function(){
+      $.ajax({
+        type: 'POST',
+        url: '{% url "cartupdate" %}',
+        data: {'ticket_slug': this.getAttribute("name"),
+              'number': this.value,
+              'csrfmiddlewaretoken': '{{ csrf_token }}'
+                }
+    }).done(function (result) {
+
+    });
+    })
+  </script>
   {% endblock content %}
