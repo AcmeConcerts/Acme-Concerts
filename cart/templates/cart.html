@@ -29,7 +29,7 @@
                       <th scope="row">
                         <a href="{{ticket.ticket.get_absolute_url}}">
                           <img src="{{MEDIA_URL}}{{ticket.ticket.image}}"
-                          class="img-fluid" style="width:200px; height:auto; max-height:100px; max-width:150px" alt="Generic placeholder image">
+                          class="img-fluid" style="object-fit: cover; width: 150px;height: 100px;"  alt="Generic placeholder image">
                         </a></th>
                       <td style="text-align: center; vertical-align: middle;" >{{ ticket.ticket.title }}</td>
                       <td style="text-align: center; vertical-align: middle;">
