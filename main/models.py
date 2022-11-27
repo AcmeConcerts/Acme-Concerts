@@ -17,6 +17,7 @@ class Ticket(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
     price_customized = models.FloatField()
+    location= models.CharField(max_length=100, default="No definido")
     category = models.CharField(choices=CATEGORY, max_length=2)
     slug = models.SlugField()
     description = models.TextField()
