@@ -12,6 +12,14 @@ CATEGORY = (
     ('R', 'Rock')
 )
 
+class Profile(models.Model):
+        user = models.CharField(max_length=100)
+        email = models.EmailField()
+
+        
+
+
+
 class Ticket(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
