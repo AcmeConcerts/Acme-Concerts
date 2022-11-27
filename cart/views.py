@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, View
 from django.contrib import messages
 from AcmeConcerts.forms import CheckoutForm
-from main.models import Order, OrderTicket
+from main.models import Order, OrderTicket, BillingAddress
 from django.contrib.auth.decorators import login_required
 import braintree
 from django.conf import settings
@@ -64,10 +64,39 @@ class CheckoutView(View):
     
     def post(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST or None)
-        if form.is_valid():
+        try:
+            order = Order.objects.get(user = self.request.user, ordered = False)
+            if form.is_valid():
+                firstname = form.cleaned_data.get('firstname')
+                lastname = form.cleaned_data.get('lastname')
+                main_address = form.cleaned_data.get('main_address')
+                optional_address = form.cleaned_data.get('optional_address')
+                country = form.cleaned_data.get('country')
+                city = form.cleaned_data.get('city')
+                cp = form.cleaned_data.get('cp')
+                billingAddress = BillingAddress(
+                    user = self.request.user,
+                    firstname = firstname,
+                    lastname = lastname,
+                    main_address = main_address, 
+                    optional_address = optional_address, 
+                    country = country,
+                    city = city, 
+                    cp = cp
+                )
+                billingAddress.save()
+                order.billing_address = billingAddress
+                order.save()
+
+                return redirect("cart")
+            messages.warning(self.request, "El formulario no es válido")
             return redirect("cart")
-        messages.warning(self.request, "Error en el checkout")
-        return redirect("cart")
+        except:
+            messages.error(self.request, "No tienes ningun pedido activo")
+            return redirect("cart")
+        
+        
+        
 
 @login_required
 def payment(request):
