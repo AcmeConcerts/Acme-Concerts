@@ -84,7 +84,7 @@ class BillingAddress(models.Model):
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     main_address = models.CharField(max_length=100)
-    optional_address = models.CharField(max_length=100)
+    optional_address = models.CharField(max_length=100, null=True)
     country = models.CharField(max_length=100,choices=COUNTRY_CHOICES)
     city = models.CharField(max_length=100,choices=CITY_CHOICES)
     cp = models.CharField(max_length=100)

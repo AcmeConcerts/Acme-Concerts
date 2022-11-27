@@ -126,7 +126,7 @@
         {% endif %}
         <div class="braintree-notifications"></div>
         <div id="braintree-dropin"></div>
-        <input style="background-color: #0783ca" id="submit-button" class="btn btn-success btn-lg btn-block" type="submit" value="Pagar" />
+        <input style="background-color: #0783ca" id="submit-button" class="btn btn-success btn-lg btn-block" type="button" value="Pagar" />
 
         </form>
         </div>
@@ -193,15 +193,45 @@
         }
     }, function (createErr, instance) {
         button.addEventListener('click', function () {
+            card_option = $('#T').is(":checked")
             instance.requestPaymentMethod(function (err, payload) {
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "payment" %}',
-                    data: {'paymentMethodNonce': payload.nonce,
-                            'csrfmiddlewaretoken': '{{ csrf_token }}'}
-                }).done(function (result) {
-                    window.location.href = "/";
+                if (card_option){
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "payment" %}',
+                        data: {'paymentMethodNonce': payload.nonce,
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                'firstname' : $('#id_firstname').val(),
+                                'lastname' : $('#id_lastname').val(),
+                                'main_address' : $('#id_main_address').val(),
+                                'optional_address' : $('#id_optional_address').val(),
+                                'country' : $('#id_country').val(),
+                                'city' : $('#id_city').val(),
+                                'cp' : $('#id_cp').val(),
+                                'payment_option' : $('#T').is(":checked")
+                            }
+                    }).done(function (result) {
+                        window.location.href = "/";
                 });
+                }
+                else{
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "payment" %}',
+                        data: {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                'firstname' : $('#id_firstname').val(),
+                                'lastname' : $('#id_lastname').val(),
+                                'main_address' : $('#id_main_address').val(),
+                                'optional_address' : $('#id_optional_address').val(),
+                                'country' : $('#id_country').val(),
+                                'city' : $('#id_city').val(),
+                                'cp' : $('#id_cp').val(),
+                                'payment_option' : $('#T').is(":checked")
+                            }
+                    }).done(function (result) {
+                });
+                }
             });
         });
     });

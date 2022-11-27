@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, View
 from django.contrib import messages
 from AcmeConcerts.forms import CheckoutForm
-from main.models import Order, OrderTicket, Ticket
+from main.models import BillingAddress, Order, OrderTicket, Ticket
 from django.contrib.auth.decorators import login_required
 import braintree
 from django.conf import settings
@@ -78,7 +78,7 @@ class CheckoutView(View):
             'tickets_num' : len(tickets)
         }
         return render(self.request, 'checkout.html',context)
-    
+    '''
     def post(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST or None)
         try:
@@ -91,6 +91,7 @@ class CheckoutView(View):
                 country = form.cleaned_data.get('country')
                 city = form.cleaned_data.get('city')
                 cp = form.cleaned_data.get('cp')
+                payment_option = form.cleaned_data.get('payment_option')
                 billingAddress = BillingAddress(
                     user = self.request.user,
                     firstname = firstname,
@@ -101,37 +102,68 @@ class CheckoutView(View):
                     city = city, 
                     cp = cp
                 )
+
                 billingAddress.save()
                 order.billing_address = billingAddress
                 order.save()
 
+                messages.warning(self.request, "El formulario es válido")
                 return redirect("cart")
+            
             messages.warning(self.request, "El formulario no es válido")
             return redirect("cart")
         except:
             messages.error(self.request, "No tienes ningun pedido activo")
             return redirect("cart")
+    '''
         
-        
-        
-
 @login_required
 def payment(request):
-    nonce_from_the_client = request.POST['paymentMethodNonce']
-    customer_kwargs = {
-        "first_name": request.user.first_name,
-        "last_name": request.user.last_name,
-        "email": request.user.email,
-    }
-    customer_create = braintree.Customer.create(customer_kwargs)
-    customer_id = customer_create.customer.id
-    result = braintree.Transaction.sale({
-        "amount": "10.00",
-        "payment_method_nonce": nonce_from_the_client,
-        "options": {
-            "submit_for_settlement": True
-        }
-    })
-    print(result)
-    return redirect("main:home")
+    firstname = request.POST['firstname']
+    lastname = request.POST['lastname']
+    main_address = request.POST['main_address']
+    optional_address = request.POST['optional_address']
+    country = request.POST['country']
+    city = request.POST['city']
+    cp = request.POST['cp']
+    payment_option = request.POST['payment_option']
+    try:
+        order = Order.objects.get(user = request.user, ordered = False)
+        billingAddress = BillingAddress(
+            user = request.user,
+            firstname = firstname,
+            lastname = lastname,
+            main_address = main_address, 
+            optional_address = optional_address, 
+            country = country,
+            city = city, 
+            cp = cp
+        )
+        billingAddress.save()
+        order.billing_address = billingAddress
+        order.save()
+        if payment_option == True:
+            nonce_from_the_client = request.POST['paymentMethodNonce'] 
+            customer_kwargs = {
+                "first_name": request.user.first_name,
+                "last_name": request.user.last_name,
+                "email": request.user.email,
+            }
+            customer_create = braintree.Customer.create(customer_kwargs)
+            customer_id = customer_create.customer.id
+            result = braintree.Transaction.sale({
+                "amount": "10.00",
+                "payment_method_nonce": nonce_from_the_client,
+                "options": {
+                    "submit_for_settlement": True
+                }
+            })
+            print(result)
+        return redirect("cart")
+        
+    except:
+        messages.error(request, "No tienes ningun pedido activo")
+        return redirect("cart")
+    
+    
 
