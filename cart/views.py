@@ -27,7 +27,6 @@ class OrderSummaryView(View):
                 'tickets_num' : len(tickets),
                 'MEDIA_URL' : settings.MEDIA_URL
             }
-            print("hola")
             return render(self.request, 'cart.html', context)
         except:
             messages.error(self.request, "No tienes ningun pedido activo")
@@ -68,9 +67,15 @@ class CheckoutView(View):
             braintree_client_token = braintree.ClientToken.generate({})
 
         form = CheckoutForm()
+
+        order = Order.objects.get(user = self.request.user, ordered = False)
+        tickets = OrderTicket.objects.filter(order=order)
+
         context = {
             'braintree_client_token': braintree_client_token,
-            'form': form
+            'form': form,
+            'tickets': tickets,
+            'tickets_num' : len(tickets)
         }
         return render(self.request, 'checkout.html',context)
     

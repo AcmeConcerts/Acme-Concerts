@@ -108,13 +108,13 @@ def remove_from_cart(request, slug):
                 ordered=False
             )[0]
             ordered_ticket.delete()
-            messages.info(request, "This item was removed from your cart.")
+            messages.info(request, "El ticket ha sido borrado.")
             return redirect("cart")
         else:
-            messages.info(request, "This item was not in your cart")
+            messages.info(request, "El ticket no estaba en tu carrito.")
             return redirect("main:ticket", slug=slug)
     else:
-        messages.info(request, "You do not have an active order")
+        messages.info(request, "No tienes ninguna orden activa.")
         return redirect("main:ticket", slug=slug)
 
 
