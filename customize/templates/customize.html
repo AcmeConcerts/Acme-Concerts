@@ -47,27 +47,50 @@
 
           <p>{{ object.description }}</p>
 
-          <form class="d-flex justify-content-left">
-            <a class="btn btn-warning btn-md my-0 p" href="/customize/{{object.price_customized}}">
-              Personalizar entrada
-              <iconify-icon inline icon="bi:ticket-detailed-fill"></iconify-icon>
-            </a> 
-            &nbsp
-            <!-- Default input -->
-            <button class="btn btn-primary btn-md my-0 p" type="submit">
-              Añadir al carrito
-              <i class="fas fa-shopping-cart ml-1"></i>
-            </button>
-
-          </form>
-          
-
         </div>
         <!--Content-->
 
       </div>
       <!--Grid column-->
-
+      <form class="justify-content-left">
+        <div class="row row-cols-3">
+          <div class="col mb-3">
+            <label for="" class="form-label mx-2">Modelo</label>
+            <select class="form-select w-100" name="model" id="model">
+              <option selected>Elige uno</option>
+              <option value="model1">Modelo 1</option>
+              <option value="model2">Modelo 2</option>
+              <option value="model3">Modelo 3</option>
+            </select>
+          </div>
+          <div class="col mb-3">
+            <label for="" class="form-label mx-2">Color</label>
+            <select class="form-select w-100" name="color" id="model">
+              <option selected>Elige uno</option>
+              <option value="model1">Color 1</option>
+              <option value="model2">Color 2</option>
+              <option value="model3">Color 3</option>
+            </select>
+          </div>
+          <div class="col mb-3">
+            <label for="" class="form-label mx-2">Tipografía</label>
+            <select class="form-select w-100" name="typing" id="model">
+              <option selected>Elige uno</option>
+              <option value="model1">Comic Sans</option>
+              <option value="model2">Calibri</option>
+              <option value="model3">Arial</option>
+            </select>
+          </div>
+        </div>
+        <div class="row row-cols-1">
+          <div class="col text-center"> 
+            <button class="col btn btn-primary btn-md my-0 p" type="submit">
+            Añadir al carrito
+            <i class="fas fa-shopping-cart ml-1"></i>
+            </button>
+          </div> 
+        </div>
+      </form>
     </div>
     <!--Grid row-->
 
@@ -82,8 +105,18 @@
         <h4 class="my-4 h4">Información adicional</h4>
 
         <p>
-          ¿Tienes algún familiar o amigo al que no sabes que regalar? Aprovecha y personaliza una entrada con las herramientas
-          que ponemos a tu disposición.</p>
+          Disponemos de 3 estilos de personalización de entradas.
+          La entrada por defecto cuenta con el nombre del concierto y artista junto con los datos del concierto.
+          Los demás estilos de entrada incluyen las imágenes de cartelera del concierto así como todos los datos.
+        </p>
+        <img src="/resources/images/tickets/Ejemplo_entrada.png" alt="Ticket example" class="img-fluid">
+        <div class="mt-3">
+          <p>
+            ¿Tienes algún familiar o amigo al que no sabes que regalar? Aprovecha y personaliza una entrada con las herramientas
+            que ponemos a tu disposición.
+          </p>
+        </div>
+        
         <small class="text-secondary">Las entradas pueden ser adquiridas por el precio estandar en caso de no personalizarse.</small>
 
       </div>
