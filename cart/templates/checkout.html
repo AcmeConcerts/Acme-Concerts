@@ -1,6 +1,7 @@
 {% extends "base_cart.html" %}
-
 {% block content %}
+
+<script src="https://js.braintreegateway.com/web/dropin/1.18.0/js/dropin.min.js"></script>
 
 <div class="container">
     <div class="py-5 text-center">
@@ -13,41 +14,33 @@
         <div class="col-md-4 order-md-2 mb-4">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">Tu carrito</span>
-            <span class="badge badge-secondary badge-pill">3</span>
+            <span class="badge badge-secondary badge-pill">{{tickets_num}}</span>
         </h4>
         <ul class="list-group mb-3">
+            {% for ticket in tickets %}
             <li class="list-group-item d-flex justify-content-between lh-condensed">
+            
             <div>
-                <h6 class="my-0">Anuel</h6>
-                <small class="text-muted">Sevilla - 12 de Diciembre 2022</small>
+                <h6 class="my-0">{{ticket.ticket.title}}</h6>
+                <small class="text-muted">{{ticket.ticket.location}} - {{ticket.ticket.date}}</small>
             </div>
-            <span class="text-muted">120€</span>
+            <span class="price-tickets" class="text-muted" num="{{ticket.quantity}}" price="{{ticket.ticket.price}}" ></span>
             </li>
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-                <h6 class="my-0">Aitana</h6>
-                <small class="text-muted">Malaga - 5 de Febrero de 2023</small>
-            </div>
-            <span class="text-muted">80€</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-                <h6 class="my-0">Melendi</h6>
-                <small class="text-muted">Badajoz - 23 de Marzo de 2023</small>
-            </div>
-            <span class="text-muted">50€</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between bg-light">
+            {% endfor %}
+            
+            <!--<li class="list-group-item d-flex justify-content-between bg-light">
             <div class="text-success">
                 <h6 class="my-0">Codigo promocional</h6>
                 <small>ILOVEPGPI</small>
             </div>
             <span class="text-success">-10€</span>
             </li>
+            -->
             <li class="list-group-item d-flex justify-content-between">
             <span>Total (EUR)</span>
-            <strong>140€</strong>
+            <strong id="total-price"></strong>
             </li>
+            
         </ul>
 
         <form class="card p-2">
@@ -59,90 +52,55 @@
             </div>
         </form>
         </div>
+
         <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Dirección de envío</h4>
-        <form class="needs-validation" novalidate>
+        
+        <form method="POST">
+            {% csrf_token %}
+
             <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="firstName">Nombre</label>
-                <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
-                <div class="invalid-feedback">
-                Necesitamos un nombre válido.
-                </div>
+                {{ form.firstname }}
             </div>
             <div class="col-md-6 mb-3">
                 <label for="lastName">Apellidos</label>
-                <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
-                <div class="invalid-feedback">
-                Necesitamos un apellido válido.
-                </div>
-            </div>
-            </div>
-
-            <div class="mb-3">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" placeholder="">
-            <div class="invalid-feedback">
-                Introduce un email válido.
+                {{ form.lastname }}
             </div>
             </div>
 
             <div class="mb-3">
             <label for="address">Dirección</label>
-            <input type="text" class="form-control" id="address" placeholder="" required>
-            <div class="invalid-feedback">
-                Introduce una dirección valida
-            </div>
+            {{ form.main_address }}
             </div>
 
             <div class="mb-3">
             <label for="address2">Detalles adicionales <span class="text-muted">(Opcional)</span></label>
-            <input type="text" class="form-control" id="address2" placeholder="">
+            {{ form.optional_address }}            
             </div>
 
             <div class="row">
             <div class="col-md-5 mb-3">
                 <label for="country">País</label>
-                <select class="custom-select d-block w-100" id="country" required>
-                <option value="">Elige...</option>
-                <option>España</option>
-                </select>
-                <div class="invalid-feedback">
-                Selecciona un
-                </div>
+                {{ form.country }}
             </div>
             <div class="col-md-4 mb-3">
                 <label for="state">Ciudad</label>
-                <select class="custom-select d-block w-100" id="state" required>
-                <option value="">Elige...</option>
-                <option>Sevilla</option>
-                <option>Cadiz</option>
-                <option>Malaga</option>
-                <option>Almeria</option>
-                <option>Granada</option>
-                <option>Huelva</option>
-                <option>Cordoba</option>
-                <option>Jaen</option>
-                </select>
-                <div class="invalid-feedback">
-                Introduce una ciudad.
-                </div>
+                {{ form.city }}
             </div>
             <div class="col-md-3 mb-3">
                 <label for="zip">Código Postal</label>
-                <input type="text" class="form-control" id="zip" placeholder="" required>
-                <div class="invalid-feedback">
-                Introduce un código postal.
-                </div>
+                {{ form.cp }}
             </div>
             </div>
             <hr class="mb-4">
             <div class="custom-control custom-checkbox">
-            <input checked type="checkbox" class="custom-control-input" id="same-address">
+            {{ form.same_billing_address }}
             <label class="custom-control-label" for="same-address">Mi dirección de envío es la misma que mi dirección de facturación</label>
             </div>
             <div class="custom-control custom-checkbox">
-            <input checked type="checkbox" class="custom-control-input" id="save-info">
+                {{ form.save_info }}
             <label class="custom-control-label" for="save-info">Guardar información para futuras compras</label>
             </div>
             <hr class="mb-4">
@@ -150,65 +108,105 @@
             <h4 class="mb-3">Métodos de pago</h4>
 
             <div class="d-block my-3">
+            {% for value,name in form.fields.payment_option.choices %}
             <div class="custom-control custom-radio">
-                <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
-                <label class="custom-control-label" for="credit">Credit card</label>
+                <input id="{{value}}" name="payment_option" value="{{value}}"type="radio" class="custom-control-input" required>
+                <label class="custom-control-label" for="{{value}}"> {{ name }}</label>
             </div>
-            <div class="custom-control custom-radio">
-                <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
-                <label class="custom-control-label" for="debit">Debit card</label>
-            </div>
-            <div class="custom-control custom-radio">
-                <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
-                <label class="custom-control-label" for="paypal">PayPal</label>
-            </div>
-            </div>
-            <div class="row">
-            <div class="col-md-6 mb-3">
-                <label for="cc-name">Name on card</label>
-                <input type="text" class="form-control" id="cc-name" placeholder="" required>
-                <small class="text-muted">Full name as displayed on card</small>
-                <div class="invalid-feedback">
-                Name on card is required
-                </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="cc-number">Credit card number</label>
-                <input type="text" class="form-control" id="cc-number" placeholder="" required>
-                <div class="invalid-feedback">
-                Credit card number is required
-                </div>
-            </div>
-            </div>
-            <div class="row">
-            <div class="col-md-3 mb-3">
-                <label for="cc-expiration">Expiration</label>
-                <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-                <div class="invalid-feedback">
-                Expiration date required
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="cc-cvv">CVV</label>
-                <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-                <div class="invalid-feedback">
-                Security code required
-                </div>
-            </div>
+            {% endfor %}
             </div>
             <hr class="mb-4">
-            <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+            <!--<button class="btn btn-primary btn-lg btn-block" type="submit">Pasarela de Pago</button> -->
+            
+            {% if braintree_error %}
+            <div class="alert alert-danger fade in">
+                <button class="close" data-dismiss="alert">&times;</button>
+                {{ braintree_error|safe }}
+            </div>
+        {% endif %}
+        <div class="braintree-notifications"></div>
+        <div id="braintree-dropin"></div>
+        <input style="background-color: #0783ca" id="submit-button" class="btn btn-success btn-lg btn-block" type="button" value="Pagar" />
+
         </form>
         </div>
     </div>
 
     <footer class="my-5 pt-5 text-muted text-center text-small">
-        <p class="mb-1">© 2021 - 2045 Company Name</p>
+        <p class="mb-1">© 2022 - 2023 Acme Concerts</p>
         <ul class="list-inline">
-        <li class="list-inline-item"><a href="#">Privacy</a></li>
-        <li class="list-inline-item"><a href="#">Terms</a></li>
-        <li class="list-inline-item"><a href="#">Support</a></li>
+        <li class="list-inline-item"><a href="#">Privacidad</a></li>
+        <li class="list-inline-item"><a href="#">Términos</a></li>
+        <li class="list-inline-item"><a href="#">Soporte</a></li>
         </ul>
     </footer>
     </div>
+
+<script>
+    var checkout = $("#braintree-dropin")
+    var all_span_prices = document.getElementsByClassName("price-tickets");
+    calculate_total_ticket_price()
+    calculate_total_price()
+    checkout.addClass("hidden")
+
+    $('input:radio[name=payment_option]').change(function() {
+        if ($('#T').is(":checked")) {
+            checkout.removeClass("hidden")
+        }
+        else {
+            checkout.addClass("hidden")
+        }
+    });
+
+    function calculate_total_ticket_price(){
+        for(var i = 0; i < all_span_prices.length; i++) {
+            quantity = all_span_prices[i].getAttribute("num");
+            price_unit = all_span_prices[i].getAttribute("price");
+            all_span_prices[i].textContent = quantity * price_unit + ".00€";
+        }
+    }
+    function calculate_total_price(){
+        let total_tickets_price = 0.;
+        let tickets_price = 0.;
+        for(var i = 0; i < all_span_prices.length; i++) {
+
+            quantity = all_span_prices[i].getAttribute("num");
+            price_unit = all_span_prices[i].getAttribute("price");
+            tickets_price = parseFloat(quantity * price_unit);
+            total_tickets_price += tickets_price;
+        }
+
+        document.getElementById("total-price").textContent = total_tickets_price + ".00€";
+      }
+    
+</script>
+<script>
+    var braintree_client_token = "{{ braintree_client_token }}";
+    var button = document.querySelector('#submit-button');
+
+    braintree.dropin.create({
+        authorization: braintree_client_token,
+        container: '#braintree-dropin',
+        locale: 'es_ES',
+        card: {
+        cardholderName: {
+            required: false
+        }
+        }
+    }, function (createErr, instance) {
+        button.addEventListener('click', function () {
+            instance.requestPaymentMethod(function (err, payload) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "payment" %}',
+                    data: {'paymentMethodNonce': payload.nonce,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'}
+                }).done(function (result) {
+                    window.location.href = "/";
+                });
+            });
+        });
+    });
+</script>
+
 {% endblock content %}

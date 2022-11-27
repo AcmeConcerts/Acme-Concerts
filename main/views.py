@@ -1,10 +1,10 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render,redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, View
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from .models import *
-
+from django.contrib import messages
 # Create your views here.
 
 def index(request):
@@ -64,14 +64,58 @@ def products_rock(request):
 
 @login_required
 def add_to_cart(request, slug):
-    #TODO
-    pass
+    ticket = get_object_or_404(Ticket, slug=slug)
+
+    order_qs, order_created = Order.objects.get_or_create(user=request.user, ordered=False)
+    
+
+    order_ticket, created = OrderTicket.objects.get_or_create( #Si lo encuentra, created deberia ser false
+        ticket=ticket,
+        user=request.user,
+        ordered=False,
+        order=order_qs,
+        customized=False
+    )
+
+    # check if the order item is in the order
+    if not created:
+        order_ticket.quantity += 1
+        order_ticket.save()
+        messages.info(request, "Cantidad de este ticket actualizada.")
+    else: #Si no estaba se abrá creado, simplemente guardamos
+        order_ticket.save()
+        messages.info(request, "Añadido al carro.")
+
+
+    return redirect("main:ticket", slug=slug)
 
 
 @login_required
 def remove_from_cart(request, slug):
-    #TODO
-    pass
+    ticket = get_object_or_404(Ticket, slug=slug)
+    order_qs = Order.objects.filter(
+        user=request.user,
+        ordered=False
+    )
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        ordered_tickets = OrderTicket.objects.filter(order=order)
+        if ordered_tickets.filter(ticket=ticket).exists():
+            ordered_ticket = OrderTicket.objects.filter(
+                ticket=ticket,
+                user=request.user,
+                ordered=False
+            )[0]
+            ordered_ticket.delete()
+            messages.info(request, "El ticket ha sido borrado.")
+            return redirect("cart")
+        else:
+            messages.info(request, "El ticket no estaba en tu carrito.")
+            return redirect("main:ticket", slug=slug)
+    else:
+        messages.info(request, "No tienes ninguna orden activa.")
+        return redirect("main:ticket", slug=slug)
 
 
 @login_required

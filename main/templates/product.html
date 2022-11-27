@@ -3,7 +3,7 @@
 {% block content %}
 
 
-<main class="mt-5 pt-4">
+<main class="mt-2 pt-2">
   <div class="container dark-grey-text mt-5">
 
     <!--Grid row-->
@@ -33,14 +33,14 @@
           <p class="lead">
             {% if object.price_customized %}
             <span class="text-secondary mr-1">
-              <b>${{ object.price }}</b>
+              <b>{{ object.price }}€</b>
             </span>
-            <span><b class="text-warning">Premium: ${{ object.price_customized }}</b></span>
+            <span><b class="text-warning">Premium: {{ object.price_customized }}€</b></span>
             {% else %}
-            <span>${{ object.price }}</span>
+            <span>{{ object.price }}€</span>
             {% endif %}
           </p>
-          <p class="lead font-weight-bold">{{object.date}}</p>
+          <p class="lead font-weight-bold">{{object.location}} | {{object.date}}</p>
 
 
           <p class="lead font-weight-bold"><b>Descripción</b></p>
@@ -48,19 +48,24 @@
           <p>{{ object.description }}</p>
 
           <form class="d-flex justify-content-left">
+            {%if object.stock == 0%}
+            <a class="btn btn-danger btn-md my-0 p">
+              ENTRADAS AGOTADAS
+              <iconify-icon icon="bi:dash-circle-fill"></iconify-icon>
+            </a>
+            {% else %}
             <a class="btn btn-warning btn-md my-0 p" href="/customize/{{ticket.slug}}">
               Personalizar entrada
               <iconify-icon inline icon="bi:ticket-detailed-fill"></iconify-icon>
             </a> 
             &nbsp
             <!-- Default input -->
-            <button class="btn btn-primary btn-md my-0 p" type="submit">
+            <a href="{{object.get_add_to_cart_url}}" class="btn btn-primary btn-md my-0 p" type="submit">
               Añadir al carrito
               <i class="fas fa-shopping-cart ml-1"></i>
-            </button>
-
+            </a>
+            {% endif %}
           </form>
-          
 
         </div>
         <!--Content-->
@@ -113,3 +118,4 @@
   <script src="https://code.iconify.design/iconify-icon/1.0.1/iconify-icon.min.js"></script>
 </main>
 {% endblock content %}
+

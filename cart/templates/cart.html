@@ -1,62 +1,70 @@
 {% extends "base.html" %}
-
 {% block content %}
-  <section class="vh-100" style="">
-    <div class="container h-100">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col">
-          <p><span class="h2">Carrito de la compra </span><span class="h4">(1 elemento en tu carrito)</span></p>
 
-          <div class="card mb-4">
-            <div class="card-body p-4">
+  <section class="vh-100">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-80">
+        <div class="col">
+          <p><span class="h2">Carrito de la compra </span><span class="h4">({{tickets_num}} elemento/s en tu carrito)</span></p>
+
+
 
               <div class="row align-items-center">
-                <div class="col-md-2">
-                  <img src="https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/1.webp"
-                    class="img-fluid" alt="Generic placeholder image">
-                </div>
-                <div class="col-md-2 d-flex justify-content-center">
-                  <div>
-                    <p class="small text-muted mb-4 pb-2">Nombre</p>
-                    <p class="lead fw-normal mb-0">iPad Air</p>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th style="text-align: center;" scope="col">Entrada</th>
+                      <th style="text-align: center;" scope="col">Nombre</th>
+                      <th style="text-align: center;" scope="col">Personalizada</th>
+                      <th style="text-align: center;" scope="col">Cantidad</th>
+                      <th style="text-align: center;" scope="col">Precio Unidad</th>
+                      <th style="text-align: center;" scope="col">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                {% for ticket in tickets %}
+                  <div class="card" style="width: 80vw; background-color:gray; margin-bottom: 10px;">
+                    
+                    <tr style="text-align: center;">
+                      <th scope="row">
+                        <a href="{{ticket.ticket.get_absolute_url}}">
+                          <img src="{{MEDIA_URL}}{{ticket.ticket.image}}"
+                          class="img-fluid" style="width:200px; height:auto; max-height:100px; max-width:150px" alt="Generic placeholder image">
+                        </a></th>
+                      <td style="text-align: center; vertical-align: middle;" >{{ ticket.ticket.title }}</td>
+                      <td style="text-align: center; vertical-align: middle;">
+                        {% if ticket.customized  %}
+                          Sí
+                        {% else %}
+                          No
+                        {% endif %}
+                        </td>
+                      <td style="text-align: center; vertical-align: middle;">
+                        <input name="{{ ticket.ticket.slug }}" class="quantity" style="text-align: center; width:40px;" type="number" value="{{ ticket.quantity }}" min="1" max="100">
+
+                        <br>
+                        <a href="{% url 'main:remove-from-cart' ticket.ticket.slug%}">Eliminar</a>
+                        
+                      </td>
+                      <td class="price_unit" style="text-align: center; vertical-align: middle;">{{ ticket.ticket.price }}0€</td>
+                      <td class="price" id="{{forloop.counter0}}" style="text-align: center; vertical-align: middle;"></td>
+                    </tr>
                   </div>
-                </div>
-                <div class="col-md-2 d-flex justify-content-center">
-                  <div>
-                    <p class="small text-muted mb-4 pb-2">Personalizada</p>
-                    <p class="lead fw-normal mb-0">Si</p>
-                  </div>
-                </div>
-                <div class="col-md-2 d-flex justify-content-center">
-                  <div>
-                    <p class="small text-muted mb-4 pb-2">Cantidad</p>
-                    <p class="lead fw-normal mb-0">1</p>
-                  </div>
-                </div>
-                <div class="col-md-2 d-flex justify-content-center">
-                  <div>
-                    <p class="small text-muted mb-4 pb-2">Precio</p>
-                    <p class="lead fw-normal mb-0">$799</p>
-                  </div>
-                </div>
-                <div class="col-md-2 d-flex justify-content-center">
-                  <div>
-                    <p class="small text-muted mb-4 pb-2">Total</p>
-                    <p class="lead fw-normal mb-0">$799</p>
-                  </div>
-                </div>
+                {% endfor %}
+                </tbody>
+              </table>
               </div>
 
             </div>
           </div>
-
-          <div class="card mb-5">
+          <br>
+          <div class="card mb-4">
             <div class="card-body p-4">
 
               <div class="float-end">
                 <p class="mb-0 me-5 d-flex align-items-center">
-                  <span class="small text-muted me-2">Order total:</span> <span
-                    class="lead fw-normal">$799</span>
+                  <span class="small text-muted me-2">Total carrito:</span> 
+                  <span id="total_price" class="lead fw-normal">$799</span>
                 </p>
               </div>
 
@@ -68,7 +76,7 @@
               <button type="button" class="btn btn-light btn-lg me-2" style="  border: 1px solid gray;">
               Continuar Comprando</button></a>
             <a href="checkout">
-              <button type="button" style="background-color:#ffc107;"class="btn  btn-lg">Pasarela de Pago</button>
+              <button type="button" style="background-color:#ffc107;"class="btn  btn-lg">Terminar pedido</button>
             </a>
           </div>
 
@@ -76,4 +84,51 @@
       </div>
     </div>
   </section>
+
+  <script>
+    var all_input_quantity = document.getElementsByClassName("quantity");
+    var all_td_price_unit = document.getElementsByClassName("price_unit");
+    var all_td_price = document.getElementsByClassName("price");
+    var total_price = document.getElementById("total_price");
+
+    calculate_total_ticket_price()
+    calculate_total_price()
+
+    function calculate_total_ticket_price(){
+      for(var i = 0; i < all_input_quantity.length; i++) {
+        quantity = all_input_quantity[i].value;
+        price_unit = all_td_price_unit[i].textContent.substring(0,5);
+        price = document.getElementById(i);
+
+        price.textContent = quantity * price_unit + ".00€";
+      }
+    }
+
+    function calculate_total_price(){
+      let total_tickets_price = 0.;
+      let tickets_price = 0.;
+      for(var i = 0; i < all_input_quantity.length; i++) {
+        tickets_price = parseFloat(all_td_price[i].textContent.substring(0,5));
+        total_tickets_price += tickets_price;
+      }
+      total_price.textContent = total_tickets_price + ".00€";
+    }
+
+    $('[type=number]').change(function(){
+      calculate_total_ticket_price()
+      calculate_total_price()
+
+      $.ajax({
+        type: 'POST',
+        url: '{% url "cartupdate" %}',
+        data: {'ticket_slug': this.getAttribute("name"),
+              'number': this.value,
+              'csrfmiddlewaretoken': '{{ csrf_token }}'
+                }
+    }).done(function (result) {
+
+    });
+    })
+  </script>
   {% endblock content %}
+  
