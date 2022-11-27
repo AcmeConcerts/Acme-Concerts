@@ -17,7 +17,8 @@
                       <th style="text-align: center;" scope="col">Nombre</th>
                       <th style="text-align: center;" scope="col">Personalizada</th>
                       <th style="text-align: center;" scope="col">Cantidad</th>
-                      <th style="text-align: center;" scope="col">Precio</th>
+                      <th style="text-align: center;" scope="col">Precio Unidad</th>
+                      <th style="text-align: center;" scope="col">Total</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -26,8 +27,10 @@
                     
                     <tr style="text-align: center;">
                       <th scope="row">
-                        <img src="{{MEDIA_URL}}{{ticket.ticket.image}}"
-                        class="img-fluid" style="width:200px; height:auto; max-height:100px; max-width:150px" alt="Generic placeholder image"></th>
+                        <a href="{{ticket.ticket.get_absolute_url}}">
+                          <img src="{{MEDIA_URL}}{{ticket.ticket.image}}"
+                          class="img-fluid" style="width:200px; height:auto; max-height:100px; max-width:150px" alt="Generic placeholder image">
+                        </a></th>
                       <td style="text-align: center; vertical-align: middle;" >{{ ticket.ticket.title }}</td>
                       <td style="text-align: center; vertical-align: middle;">
                         {% if ticket.customized  %}
@@ -37,12 +40,13 @@
                         {% endif %}
                         </td>
                       <td style="text-align: center; vertical-align: middle;">
-                        <input style="text-align: center; width:40px;" type="number" value="{{ ticket.quantity }}" min="1" max="100">
+                        <input style="text-align: center; width:40px;" class="quantity" type="number" value="{{ ticket.quantity }}" min="1" max="100">
                         <br>
                         <a href="{% url 'main:remove-from-cart' ticket.ticket.slug%}">Eliminar</a>
                         
                       </td>
-                      <td style="text-align: center; vertical-align: middle;">{{ ticket.ticket.price }}0€</td>
+                      <td class="price_unit" style="text-align: center; vertical-align: middle;">{{ ticket.ticket.price }}0€</td>
+                      <td class="price" id="{{forloop.counter0}}" style="text-align: center; vertical-align: middle;"></td>
                     </tr>
                   </div>
                 {% endfor %}
@@ -58,8 +62,8 @@
 
               <div class="float-end">
                 <p class="mb-0 me-5 d-flex align-items-center">
-                  <span class="small text-muted me-2">Total carrito:</span> <span
-                    class="lead fw-normal">$799</span>
+                  <span class="small text-muted me-2">Total carrito:</span> 
+                  <span id="total_price" class="lead fw-normal">$799</span>
                 </p>
               </div>
 
@@ -79,4 +83,34 @@
       </div>
     </div>
   </section>
-  {% endblock content %}
+  
+  <script>
+    var all_input_quantity = document.getElementsByClassName("quantity");
+    var all_td_price_unit = document.getElementsByClassName("price_unit");
+    var all_td_price = document.getElementsByClassName("price");
+    var total_price = document.getElementById("total_price");
+
+    calculate_total_ticket_price()
+    calculate_total_price()
+
+    function calculate_total_ticket_price(){
+      for(var i = 0; i < all_input_quantity.length; i++) {
+        quantity = all_input_quantity[i].value;
+        price_unit = all_td_price_unit[i].textContent.substring(0,5);
+        price = document.getElementById(i);
+
+        price.textContent = quantity * price_unit + ".00€";
+      }
+    }
+
+    function calculate_total_price(){
+      let total_tickets_price = 0.;
+      let tickets_price = 0.;
+      for(var i = 0; i < all_input_quantity.length; i++) {
+        tickets_price = parseFloat(all_td_price[i].textContent.substring(0,5));
+        total_tickets_price += tickets_price;
+      }
+      total_price.textContent = total_tickets_price + ".00€";
+    }
+  </script>
+    {% endblock content %}
