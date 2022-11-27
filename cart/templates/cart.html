@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-
 {% block content %}
+
   <section class="vh-100">
     <div class="container h-100">
       <div class="row d-flex justify-content-center align-items-center h-80">
@@ -40,7 +40,8 @@
                         {% endif %}
                         </td>
                       <td style="text-align: center; vertical-align: middle;">
-                        <input style="text-align: center; width:40px;" class="quantity" type="number" value="{{ ticket.quantity }}" min="1" max="100">
+                        <input name="{{ ticket.ticket.slug }}" class="quantity" style="text-align: center; width:40px;" type="number" value="{{ ticket.quantity }}" min="1" max="100">
+
                         <br>
                         <a href="{% url 'main:remove-from-cart' ticket.ticket.slug%}">Eliminar</a>
                         
@@ -83,7 +84,7 @@
       </div>
     </div>
   </section>
-  
+
   <script>
     var all_input_quantity = document.getElementsByClassName("quantity");
     var all_td_price_unit = document.getElementsByClassName("price_unit");
@@ -112,5 +113,22 @@
       }
       total_price.textContent = total_tickets_price + ".00€";
     }
+
+    $('[type=number]').change(function(){
+      calculate_total_ticket_price()
+      calculate_total_price()
+
+      $.ajax({
+        type: 'POST',
+        url: '{% url "cartupdate" %}',
+        data: {'ticket_slug': this.getAttribute("name"),
+              'number': this.value,
+              'csrfmiddlewaretoken': '{{ csrf_token }}'
+                }
+    }).done(function (result) {
+
+    });
+    })
   </script>
-    {% endblock content %}
+  {% endblock content %}
+  

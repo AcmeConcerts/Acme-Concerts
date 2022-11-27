@@ -1,10 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
-from django.shortcuts import redirect
 from django.views.generic import ListView, DetailView, View
 from django.contrib import messages
 from AcmeConcerts.forms import CheckoutForm
-from main.models import Order, OrderTicket, BillingAddress
+from main.models import Order, OrderTicket, Ticket
 from django.contrib.auth.decorators import login_required
 import braintree
 from django.conf import settings
@@ -18,19 +17,31 @@ class OrderSummaryView(View):
     
     def get(self, *args, **kwargs):
         try:
+            
             order = Order.objects.get(user = self.request.user, ordered = False)
             tickets = OrderTicket.objects.filter(order=order)
+            
             context = {
                 'object' : order,
                 'tickets' : tickets,
                 'tickets_num' : len(tickets),
                 'MEDIA_URL' : settings.MEDIA_URL
             }
-            
             return render(self.request, 'cart.html', context)
         except:
             messages.error(self.request, "No tienes ningun pedido activo")
-            return redirect("/")
+            return redirect("cart")
+
+def CartUpdate(request):
+    ticket_slug = request.POST['ticket_slug']
+    number = request.POST['number']
+    order = Order.objects.get(user = request.user, ordered = False)
+    ticket = Ticket.objects.get(slug= ticket_slug)
+    order_ticket = OrderTicket.objects.get(order=order,ticket=ticket)
+    order_ticket.quantity= number
+    order_ticket.save()
+    return HttpResponse("Ok")
+
         
 
 class CheckoutView(View):
@@ -56,9 +67,15 @@ class CheckoutView(View):
             braintree_client_token = braintree.ClientToken.generate({})
 
         form = CheckoutForm()
+
+        order = Order.objects.get(user = self.request.user, ordered = False)
+        tickets = OrderTicket.objects.filter(order=order)
+
         context = {
             'braintree_client_token': braintree_client_token,
-            'form': form
+            'form': form,
+            'tickets': tickets,
+            'tickets_num' : len(tickets)
         }
         return render(self.request, 'checkout.html',context)
     
