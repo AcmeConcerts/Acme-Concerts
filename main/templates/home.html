@@ -89,7 +89,7 @@
                 </a>
                 {% else %}
                 <a href="{{ticket.get_absolute_url}}">
-                  <img src="{{MEDIA_URL}}{{ticket.image}}" class="card-img-top">
+                  <img src="{{MEDIA_URL}}{{ticket.image}}" style="object-fit: cover; width: 305px;height: 200px;" class="card-img-top">
                 </a>
                 {% endif %}
               </div>

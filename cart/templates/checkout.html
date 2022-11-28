@@ -2,6 +2,8 @@
 {% block content %}
 
 <script src="https://js.braintreegateway.com/web/dropin/1.18.0/js/dropin.min.js"></script>
+<!--  jquery script  -->
+<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
 
 <div class="container">
     <div class="py-5 text-center">
@@ -56,7 +58,7 @@
         <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Dirección de envío</h4>
         
-        <form method="POST">
+        <form name="form" id="checkout-form"method="POST">
             {% csrf_token %}
 
             <div class="row">
@@ -147,7 +149,34 @@
     var all_span_prices = document.getElementsByClassName("price-tickets");
     calculate_total_ticket_price()
     calculate_total_price()
-    checkout.addClass("hidden")
+    
+    document.getElementById("T").checked = true;
+
+    function validateForm() {
+        let firstname = document.forms["form"]["firstname"].value;
+        let lastname = document.forms["form"]["lastname"].value;
+        let main_address = document.forms["form"]["main_address"].value;
+        let cp = document.forms["form"]["cp"].value;
+
+        if (firstname == "") {
+            alert("Por favor complete el campo 'Nombre'");
+            return false;
+        }
+        if (lastname == "") {
+            alert("Por favor complete el campo 'Apellidos'");
+            return false;
+        }
+        if (main_address == "") {
+            alert("Por favor complete el campo 'Dirección'");
+            return false;
+        }
+        if (cp == "") {
+            alert("Por favor complete el campo 'Codigo Postal'");
+            return false;
+        }
+
+        return true;
+    }
 
     $('input:radio[name=payment_option]').change(function() {
         if ($('#T').is(":checked")) {
@@ -179,8 +208,6 @@
         document.getElementById("total-price").textContent = total_tickets_price + ".00€";
       }
     
-</script>
-<script>
     var braintree_client_token = "{{ braintree_client_token }}";
     var button = document.querySelector('#submit-button');
 
@@ -195,15 +222,49 @@
         }
     }, function (createErr, instance) {
         button.addEventListener('click', function () {
+            
+            card_option = $('#T').is(":checked")
             instance.requestPaymentMethod(function (err, payload) {
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "payment" %}',
-                    data: {'paymentMethodNonce': payload.nonce,
-                            'csrfmiddlewaretoken': '{{ csrf_token }}'}
-                }).done(function (result) {
-                    window.location.href = "/";
-                });
+                if(validateForm()){
+                    if (card_option){
+                        $.ajax({
+                            type: 'POST',
+                            url: '{% url "payment" %}',
+                            data: {'paymentMethodNonce': payload.nonce,
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                    'firstname' : $('#id_firstname').val(),
+                                    'lastname' : $('#id_lastname').val(),
+                                    'main_address' : $('#id_main_address').val(),
+                                    'optional_address' : $('#id_optional_address').val(),
+                                    'country' : $('#id_country').val(),
+                                    'city' : $('#id_city').val(),
+                                    'cp' : $('#id_cp').val(),
+                                    'payment_option' : $('#T').is(":checked")
+                                }
+                        }).done(function (result) {
+                            window.location.href = "/";
+                    });
+                    }
+                    else{
+                        $.ajax({
+                            type: 'POST',
+                            url: '{% url "payment" %}',
+                            data: {
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                    'firstname' : $('#id_firstname').val(),
+                                    'lastname' : $('#id_lastname').val(),
+                                    'main_address' : $('#id_main_address').val(),
+                                    'optional_address' : $('#id_optional_address').val(),
+                                    'country' : $('#id_country').val(),
+                                    'city' : $('#id_city').val(),
+                                    'cp' : $('#id_cp').val(),
+                                    'payment_option' : $('#T').is(":checked")
+                                }
+                        }).done(function (result) {
+                            window.location.href = "/";
+                    });
+                }
+                }
             });
         });
     });
