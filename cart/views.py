@@ -28,7 +28,6 @@ class OrderSummaryView(View):
             }
             return render(self.request, 'cart.html', context)
         except:
-            messages.error(self.request, "Es necesario iniciar sesión para acceder a Mi Carrito")
             return redirect("/accounts/login")
 
 def CartUpdate(request):
@@ -45,76 +44,40 @@ def CartUpdate(request):
 
 class CheckoutView(View):
     
-    
     def get(self, *args, **kwargs):
-        if settings.BRAINTREE_PRODUCTION:
-            braintree_env = braintree.Environment.Production
-        else:
-            braintree_env = braintree.Environment.Sandbox
-
-        # Configure Braintree
-        braintree.Configuration.configure(
-            braintree_env,
-            merchant_id=settings.BRAINTREE_MERCHANT_ID,
-            public_key=settings.BRAINTREE_PUBLIC_KEY,
-            private_key=settings.BRAINTREE_PRIVATE_KEY,
-        )
-    
         try:
-            braintree_client_token = braintree.ClientToken.generate({ "customer_id": self.user.id })
-        except:
-            braintree_client_token = braintree.ClientToken.generate({})
+            if settings.BRAINTREE_PRODUCTION:
+                braintree_env = braintree.Environment.Production
+            else:
+                braintree_env = braintree.Environment.Sandbox
 
-        form = CheckoutForm()
+            # Configure Braintree
+            braintree.Configuration.configure(
+                braintree_env,
+                merchant_id=settings.BRAINTREE_MERCHANT_ID,
+                public_key=settings.BRAINTREE_PUBLIC_KEY,
+                private_key=settings.BRAINTREE_PRIVATE_KEY,
+            )
+        
+            try:
+                braintree_client_token = braintree.ClientToken.generate({ "customer_id": self.user.id })
+            except:
+                braintree_client_token = braintree.ClientToken.generate({})
 
-        order = Order.objects.get(user = self.request.user, ordered = False)
-        tickets = OrderTicket.objects.filter(order=order)
+            form = CheckoutForm()
 
-        context = {
-            'braintree_client_token': braintree_client_token,
-            'form': form,
-            'tickets': tickets,
-            'tickets_num' : len(tickets)
-        }
-        return render(self.request, 'checkout.html',context)
-    '''
-    def post(self, *args, **kwargs):
-        form = CheckoutForm(self.request.POST or None)
-        try:
             order = Order.objects.get(user = self.request.user, ordered = False)
-            if form.is_valid():
-                firstname = form.cleaned_data.get('firstname')
-                lastname = form.cleaned_data.get('lastname')
-                main_address = form.cleaned_data.get('main_address')
-                optional_address = form.cleaned_data.get('optional_address')
-                country = form.cleaned_data.get('country')
-                city = form.cleaned_data.get('city')
-                cp = form.cleaned_data.get('cp')
-                payment_option = form.cleaned_data.get('payment_option')
-                billingAddress = BillingAddress(
-                    user = self.request.user,
-                    firstname = firstname,
-                    lastname = lastname,
-                    main_address = main_address, 
-                    optional_address = optional_address, 
-                    country = country,
-                    city = city, 
-                    cp = cp
-                )
+            tickets = OrderTicket.objects.filter(order=order)
 
-                billingAddress.save()
-                order.billing_address = billingAddress
-                order.save()
-
-                messages.warning(self.request, "El formulario es válido")
-                return redirect("cart")
-            
-            messages.warning(self.request, "El formulario no es válido")
-            return redirect("cart")
+            context = {
+                'braintree_client_token': braintree_client_token,
+                'form': form,
+                'tickets': tickets,
+                'tickets_num' : len(tickets)
+            }
+            return render(self.request, 'checkout.html',context)
         except:
-            messages.error(self.request, "No tienes ningun pedido activo")
-            return redirect("cart")
-    '''
+            return redirect("/accounts/login")
         
 @login_required
 def payment(request):
