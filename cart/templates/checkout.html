@@ -2,17 +2,8 @@
 {% block content %}
 
 <script src="https://js.braintreegateway.com/web/dropin/1.18.0/js/dropin.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <!--  jquery script  -->
 <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
-<!--  validation script  -->
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.0/jquery.validate.min.js"></script>
- 
-<!--  jsrender script  -->
-<script src="http://cdn.syncfusion.com/js/assets/external/jsrender.min.js"></script>
- 
-<!-- Essential JS UI widget -->
-<script src="http://cdn.syncfusion.com/16.4.0.52/js/web/ej.web.all.min.js"></script>
 
 <div class="container">
     <div class="py-5 text-center">
@@ -67,7 +58,7 @@
         <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Dirección de envío</h4>
         
-        <form id="checkout-form"method="POST">
+        <form name="form" id="checkout-form"method="POST">
             {% csrf_token %}
 
             <div class="row">
@@ -137,7 +128,7 @@
         {% endif %}
         <div class="braintree-notifications"></div>
         <div id="braintree-dropin"></div>
-        <input style="background-color: #0783ca" onclick="Submitform()" id="submit-button" class="btn btn-success btn-lg btn-block" type="button" value="Pagar" />
+        <input style="background-color: #0783ca" id="submit-button" class="btn btn-success btn-lg btn-block" type="button" value="Pagar" />
 
         </form>
         </div>
@@ -158,17 +149,34 @@
     var all_span_prices = document.getElementsByClassName("price-tickets");
     calculate_total_ticket_price()
     calculate_total_price()
-    checkout.addClass("hidden")
+    
+    document.getElementById("T").checked = true;
 
-    $("#checkout-form").validate()
+    function validateForm() {
+        let firstname = document.forms["form"]["firstname"].value;
+        let lastname = document.forms["form"]["lastname"].value;
+        let main_address = document.forms["form"]["main_address"].value;
+        let cp = document.forms["form"]["cp"].value;
 
-    function Submitform() {
-        alert("Se va a realizar el pago");
-        if (!$("#checkout-form").valid()) {
-          event.preventDefault();
-          return;
+        if (firstname == "") {
+            alert("Por favor complete el campo 'Nombre'");
+            return false;
         }
-      }
+        if (lastname == "") {
+            alert("Por favor complete el campo 'Apellidos'");
+            return false;
+        }
+        if (main_address == "") {
+            alert("Por favor complete el campo 'Dirección'");
+            return false;
+        }
+        if (cp == "") {
+            alert("Por favor complete el campo 'Codigo Postal'");
+            return false;
+        }
+
+        return true;
+    }
 
     $('input:radio[name=payment_option]').change(function() {
         if ($('#T').is(":checked")) {
@@ -217,43 +225,45 @@
             
             card_option = $('#T').is(":checked")
             instance.requestPaymentMethod(function (err, payload) {
-               
-                if (card_option){
-                    $.ajax({
-                        type: 'POST',
-                        url: '{% url "payment" %}',
-                        data: {'paymentMethodNonce': payload.nonce,
-                                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                                'firstname' : $('#id_firstname').val(),
-                                'lastname' : $('#id_lastname').val(),
-                                'main_address' : $('#id_main_address').val(),
-                                'optional_address' : $('#id_optional_address').val(),
-                                'country' : $('#id_country').val(),
-                                'city' : $('#id_city').val(),
-                                'cp' : $('#id_cp').val(),
-                                'payment_option' : $('#T').is(":checked")
-                            }
-                    }).done(function (result) {
-                        window.location.href = "/";
-                });
+                if(validateForm()){
+                    if (card_option){
+                        $.ajax({
+                            type: 'POST',
+                            url: '{% url "payment" %}',
+                            data: {'paymentMethodNonce': payload.nonce,
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                    'firstname' : $('#id_firstname').val(),
+                                    'lastname' : $('#id_lastname').val(),
+                                    'main_address' : $('#id_main_address').val(),
+                                    'optional_address' : $('#id_optional_address').val(),
+                                    'country' : $('#id_country').val(),
+                                    'city' : $('#id_city').val(),
+                                    'cp' : $('#id_cp').val(),
+                                    'payment_option' : $('#T').is(":checked")
+                                }
+                        }).done(function (result) {
+                            window.location.href = "/";
+                    });
+                    }
+                    else{
+                        $.ajax({
+                            type: 'POST',
+                            url: '{% url "payment" %}',
+                            data: {
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                    'firstname' : $('#id_firstname').val(),
+                                    'lastname' : $('#id_lastname').val(),
+                                    'main_address' : $('#id_main_address').val(),
+                                    'optional_address' : $('#id_optional_address').val(),
+                                    'country' : $('#id_country').val(),
+                                    'city' : $('#id_city').val(),
+                                    'cp' : $('#id_cp').val(),
+                                    'payment_option' : $('#T').is(":checked")
+                                }
+                        }).done(function (result) {
+                            window.location.href = "/";
+                    });
                 }
-                else{
-                    $.ajax({
-                        type: 'POST',
-                        url: '{% url "payment" %}',
-                        data: {
-                                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                                'firstname' : $('#id_firstname').val(),
-                                'lastname' : $('#id_lastname').val(),
-                                'main_address' : $('#id_main_address').val(),
-                                'optional_address' : $('#id_optional_address').val(),
-                                'country' : $('#id_country').val(),
-                                'city' : $('#id_city').val(),
-                                'cp' : $('#id_cp').val(),
-                                'payment_option' : $('#T').is(":checked")
-                            }
-                    }).done(function (result) {
-                });
                 }
             });
         });

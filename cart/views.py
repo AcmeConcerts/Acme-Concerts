@@ -17,8 +17,7 @@ class OrderSummaryView(View):
     
     def get(self, *args, **kwargs):
         try:
-            
-            order = Order.objects.get(user = self.request.user, ordered = False)
+            order,created = Order.objects.get_or_create(user = self.request.user, ordered = False)
             tickets = OrderTicket.objects.filter(order=order)
             
             context = {
@@ -29,8 +28,8 @@ class OrderSummaryView(View):
             }
             return render(self.request, 'cart.html', context)
         except:
-            messages.error(self.request, "No tienes ningun pedido activo")
-            return redirect("cart")
+            messages.error(self.request, "Es necesario iniciar sesión para acceder a Mi Carrito")
+            return redirect("/accounts/login")
 
 def CartUpdate(request):
     ticket_slug = request.POST['ticket_slug']
@@ -127,7 +126,6 @@ def payment(request):
     city = request.POST['city']
     cp = request.POST['cp']
     payment_option = request.POST['payment_option']
-    print("Que bacaneria")
     try:
         order = Order.objects.get(user = request.user, ordered = False)
         billingAddress = BillingAddress(

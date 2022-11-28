@@ -5,7 +5,7 @@
     <div class="container h-100">
       <div class="row d-flex justify-content-center align-items-center h-80">
         <div class="col">
-          <p><span class="h2">Carrito de la compra </span><span class="h4">({{tickets_num}} elemento/s en tu carrito)</span></p>
+          <p><span class="h2">Carrito de la compra </span><span class="h4">({{tickets_num}} ticket/s en tu carrito)</span></p>
 
 
 
@@ -64,7 +64,7 @@
               <div class="float-end">
                 <p class="mb-0 me-5 d-flex align-items-center">
                   <span class="small text-muted me-2">Total carrito:</span> 
-                  <span id="total_price" class="lead fw-normal">$799</span>
+                  <span id="total_price" class="lead fw-normal"></span>
                 </p>
               </div>
 
@@ -75,9 +75,15 @@
             <a href="/">
               <button type="button" class="btn btn-light btn-lg me-2" style="  border: 1px solid gray;">
               Continuar Comprando</button></a>
-            <a href="checkout">
-              <button type="button" style="background-color:#ffc107;"class="btn  btn-lg">Terminar pedido</button>
-            </a>
+            {% if tickets_num == 0%}
+              <a>
+                <button disabled type="button" style="background-color:#ffc107;"class="btn  btn-lg">Terminar pedido</button>
+              </a>
+            {% else %}
+              <a href="checkout">
+                <button type="button" style="background-color:#ffc107;"class="btn  btn-lg">Terminar pedido</button>
+              </a>
+            {% endif %}
           </div>
 
         </div>
