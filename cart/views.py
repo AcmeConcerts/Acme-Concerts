@@ -127,6 +127,7 @@ def payment(request):
     city = request.POST['city']
     cp = request.POST['cp']
     payment_option = request.POST['payment_option']
+    print("Que bacaneria")
     try:
         order = Order.objects.get(user = request.user, ordered = False)
         billingAddress = BillingAddress(

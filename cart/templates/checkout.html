@@ -2,6 +2,17 @@
 {% block content %}
 
 <script src="https://js.braintreegateway.com/web/dropin/1.18.0/js/dropin.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<!--  jquery script  -->
+<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+<!--  validation script  -->
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.0/jquery.validate.min.js"></script>
+ 
+<!--  jsrender script  -->
+<script src="http://cdn.syncfusion.com/js/assets/external/jsrender.min.js"></script>
+ 
+<!-- Essential JS UI widget -->
+<script src="http://cdn.syncfusion.com/16.4.0.52/js/web/ej.web.all.min.js"></script>
 
 <div class="container">
     <div class="py-5 text-center">
@@ -56,7 +67,7 @@
         <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Dirección de envío</h4>
         
-        <form method="POST">
+        <form id="checkout-form"method="POST">
             {% csrf_token %}
 
             <div class="row">
@@ -126,7 +137,7 @@
         {% endif %}
         <div class="braintree-notifications"></div>
         <div id="braintree-dropin"></div>
-        <input style="background-color: #0783ca" id="submit-button" class="btn btn-success btn-lg btn-block" type="button" value="Pagar" />
+        <input style="background-color: #0783ca" onclick="Submitform()" id="submit-button" class="btn btn-success btn-lg btn-block" type="button" value="Pagar" />
 
         </form>
         </div>
@@ -148,6 +159,16 @@
     calculate_total_ticket_price()
     calculate_total_price()
     checkout.addClass("hidden")
+
+    $("#checkout-form").validate()
+
+    function Submitform() {
+        alert("Se va a realizar el pago");
+        if (!$("#checkout-form").valid()) {
+          event.preventDefault();
+          return;
+        }
+      }
 
     $('input:radio[name=payment_option]').change(function() {
         if ($('#T').is(":checked")) {
@@ -193,8 +214,10 @@
         }
     }, function (createErr, instance) {
         button.addEventListener('click', function () {
+            
             card_option = $('#T').is(":checked")
             instance.requestPaymentMethod(function (err, payload) {
+               
                 if (card_option){
                     $.ajax({
                         type: 'POST',
