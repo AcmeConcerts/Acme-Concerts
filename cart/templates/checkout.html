@@ -26,7 +26,12 @@
                 <h6 class="my-0">{{ticket.ticket.title}}</h6>
                 <small class="text-muted">{{ticket.ticket.location}} - {{ticket.ticket.date}}</small>
             </div>
-            <span class="price-tickets" class="text-muted" num="{{ticket.quantity}}" price="{{ticket.ticket.price}}" ></span>
+            {% if ticket.customized  %}
+                <span class="price-tickets" class="text-muted" num="{{ticket.quantity}}" price="{{ticket.ticket.price_customized}}" ></span>
+            {% else %}
+                <span class="price-tickets" class="text-muted" num="{{ticket.quantity}}" price="{{ticket.ticket.price}}" ></span>
+            {% endif %}
+            
             </li>
             {% endfor %}
             
