@@ -10,6 +10,22 @@ from django.contrib import messages
 def index(request):
     return render(request, 'base.html')
 
+def profile(request):
+    user = request.user
+    print(user)
+    context = {
+        'user': BillingAddress.objects.all()[:3]
+    }
+    return render(request, "myProfile.html", context)
+
+def my_view(request):
+    context = {
+        'username' : username
+    }
+    if request.user.is_authenticated:
+        username = request.user.username
+    return render(request, context)
+
 def products(request):
     context = {
         'items': Ticket.objects.all()

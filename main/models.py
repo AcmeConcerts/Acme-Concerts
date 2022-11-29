@@ -12,13 +12,6 @@ CATEGORY = (
     ('R', 'Rock')
 )
 
-class Profile(models.Model):
-        user = models.CharField(max_length=100)
-        email = models.EmailField()
-
-        
-
-
 
 class Ticket(models.Model):
     title = models.CharField(max_length=100)
@@ -85,6 +78,7 @@ class BillingAddress(models.Model):
         ('C','Cádiz'),
         ('CO','Córdoba'),
     )
+    
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
