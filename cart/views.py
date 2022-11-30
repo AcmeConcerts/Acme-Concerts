@@ -72,10 +72,11 @@ class CheckoutView(View):
             tickets = OrderTicket.objects.filter(order=order)
             
             billing_addresses = BillingAddress.objects.filter(user=self.request.user)
-
+            orderId =  order.id
             context = {
                 'braintree_client_token': braintree_client_token,
                 'form': form,
+                'order_id':orderId,
                 'tickets': tickets,
                 'billing_addresses' : billing_addresses,
                 'tickets_num' : len(tickets)
@@ -178,8 +179,13 @@ def payment(request):
         return redirect("cart")
 
 @login_required
-def summary(request):
-        return render(request, 'order-summary.html')
+class summary(DetailView):
+    model = Order
+    template_name = "order-summary.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["MEDIA_URL"] = settings.MEDIA_URL
+        return context
     
     
 
