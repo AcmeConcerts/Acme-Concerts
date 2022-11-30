@@ -65,7 +65,6 @@ class CheckoutView(View):
                 braintree_client_token = braintree.ClientToken.generate({})
 
             form = CheckoutForm()
-
             order = Order.objects.get(user = self.request.user, ordered = False)
             tickets = OrderTicket.objects.filter(order=order)
             
@@ -97,7 +96,8 @@ def payment(request):
     try:
         order = Order.objects.get(user = request.user, ordered = False)
         if save_info == 'true':
-            billingAddress = BillingAddress(
+            print(request.user)
+            billingAddress = BillingAddress.objects.get_or_create(
                 user = request.user,
                 firstname = firstname,
                 lastname = lastname,
@@ -127,6 +127,8 @@ def payment(request):
                 }
             })
             print(result)
+        order.ordered = True
+        order.save()
         return redirect("cart")
         
     except:
