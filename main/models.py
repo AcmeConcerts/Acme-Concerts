@@ -37,10 +37,7 @@ class Ticket(models.Model):
         return reverse("main:add-to-cart", kwargs={
             'slug': self.slug
         })
-    def get_fast_buy_url(self):
-        return reverse("cart:fast-checkout", kwargs={
-            'slug': self.slug
-        })
+
 
     def get_remove_from_cart_url(self):
         return reverse("main:remove-from-cart", kwargs={

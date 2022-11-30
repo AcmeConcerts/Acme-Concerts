@@ -61,6 +61,7 @@
         <div class="col-md-8 order-md-1">
         <h4 style="display: inline-block;" class="mb-3">Dirección de envío</h4>
         <p style="display: inline-block;margin-left:270px;" class="mb-3">Utilizar dirección: </p>
+        {%if authenticated%}
         <li style="display: inline-block;" style="list-style-type: none;" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Direcciones de envio guardadas
@@ -73,6 +74,7 @@
                 {% endif %}
             </div>
         </li>
+        {%endif%}
 
         <form name="form" id="checkout-form"method="POST">
             {% csrf_token %}
@@ -113,14 +115,17 @@
             </div>
             </div>
             <hr class="mb-4">
+
             <div class="custom-control custom-checkbox">
             {{ form.same_billing_address }}
             <label class="custom-control-label" for="same-address">Mi dirección de envío es la misma que mi dirección de facturación</label>
             </div>
-            <div class="custom-control custom-checkbox">
-                {{ form.save_info }}
-            <label class="custom-control-label" for="save-info">Guardar información para futuras compras</label>
-            </div>
+            {%if authenticated%}
+                <div class="custom-control custom-checkbox">
+                    {{ form.save_info }}
+                <label class="custom-control-label" for="save-info">Guardar información para futuras compras</label>
+                </div>
+            {%endif%}
             <hr class="mb-4">
 
             <h4 class="mb-3">Métodos de pago</h4>
