@@ -40,7 +40,10 @@ def CartUpdate(request):
     order_ticket.save()
     return HttpResponse("Ok")
 
-        
+
+def search_order(request):
+
+    return HttpResponse("Ok")
 
 class CheckoutView(View):
     
@@ -80,6 +83,47 @@ class CheckoutView(View):
             return render(self.request, 'checkout.html',context)
         except:
             return redirect("/accounts/login")
+
+
+def fast_checkout(request,slug):
+    
+    if settings.BRAINTREE_PRODUCTION:
+        braintree_env = braintree.Environment.Production
+    else:
+        braintree_env = braintree.Environment.Sandbox
+
+    # Configure Braintree
+    braintree.Configuration.configure(
+        braintree_env,
+        merchant_id=settings.BRAINTREE_MERCHANT_ID,
+        public_key=settings.BRAINTREE_PUBLIC_KEY,
+        private_key=settings.BRAINTREE_PRIVATE_KEY,
+    )
+
+    try:
+        braintree_client_token = braintree.ClientToken.generate({ "customer_id": request.user.id })
+    except:
+        braintree_client_token = braintree.ClientToken.generate({})
+
+    form = CheckoutForm()
+
+    ticket = Ticket.objects.get(slug=slug)
+    order_ticket= OrderTicket.objects.create(ticket=ticket)
+    billing_addresses = []
+    if(request.user.is_authenticated):
+        billing_addresses = BillingAddress.objects.filter(user=request.user)
+    
+    
+    context = {
+                'braintree_client_token': braintree_client_token,
+                'form': form,
+                'billing_addresses' : billing_addresses,
+                'ticket': order_ticket,
+                'authenticated': request.user.is_authenticated
+            }
+    return render(request, "fast_checkout.html", context)
+    
+    
         
 @login_required
 def payment(request):

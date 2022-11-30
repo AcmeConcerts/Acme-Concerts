@@ -38,6 +38,7 @@ class Ticket(models.Model):
             'slug': self.slug
         })
 
+
     def get_remove_from_cart_url(self):
         return reverse("main:remove-from-cart", kwargs={
             'slug': self.slug
@@ -45,6 +46,7 @@ class Ticket(models.Model):
 
 
 class Order(models.Model):
+    id= models.BigIntegerField(auto_created=True, primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField(default= timezone.now())
@@ -57,7 +59,7 @@ class Order(models.Model):
 
 class OrderTicket(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,null=True)
     ordered = models.BooleanField(default=False)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)

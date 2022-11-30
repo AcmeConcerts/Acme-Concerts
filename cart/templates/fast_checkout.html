@@ -1,0 +1,296 @@
+{% extends "base_cart.html" %}
+{% block content %}
+
+<script src="https://js.braintreegateway.com/web/dropin/1.18.0/js/dropin.min.js"></script>
+<!--  jquery script  -->
+<script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+<div class="container">
+    <div class="py-5 text-center">
+
+        <a class="navbar-brand" href="/"><img id="logo" src="/resources/images/logo.png" class="" alt="Acme Concerts"></a>
+        <h2>Acme Concerts</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 order-md-2 mb-4">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Tu carrito</span>
+            <span class="badge badge-secondary badge-pill">1</span>
+        </h4>
+        <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+            
+            <div>
+                <h6 class="my-0">{{ticket.ticket.title}}</h6>
+                <small class="text-muted">{{ticket.ticket.location}} - {{ticket.ticket.date}}</small>
+            </div>
+            {% if ticket.customized  %}
+                <span class="price-tickets" class="text-muted" num="{{ticket.quantity}}" price="{{ticket.ticket.price_customized}}" ></span>
+            {% else %}
+                <span class="price-tickets" class="text-muted" num="{{ticket.quantity}}" price="{{ticket.ticket.price}}" ></span>
+            {% endif %}
+            
+            </li>
+            
+            <!--<li class="list-group-item d-flex justify-content-between bg-light">
+            <div class="text-success">
+                <h6 class="my-0">Codigo promocional</h6>
+                <small>ILOVEPGPI</small>
+            </div>
+            <span class="text-success">-10€</span>
+            </li>
+            -->
+            <li class="list-group-item d-flex justify-content-between">
+            <span>Total (EUR)</span>
+            <strong id="total-price"></strong>
+            </li>
+            
+        </ul>
+
+        <form class="card p-2">
+            <div class="input-group">
+            <input type="text" class="form-control" placeholder="Promo code">
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-secondary">Canjear</button>
+            </div>
+            </div>
+        </form>
+        </div>
+
+        <div class="col-md-8 order-md-1">
+        <h4 style="display: inline-block;" class="mb-3">Dirección de envío</h4>
+        <p style="display: inline-block;margin-left:270px;" class="mb-3">Utilizar dirección: </p>
+        {%if authenticated%}
+        <li style="display: inline-block;" style="list-style-type: none;" class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Direcciones de envio guardadas
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if billing_addresses != null %}
+                    {% for billing_address in billing_addresses %}
+                        <a class="dropdown-item">{{billing_address.main_address}}</a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </li>
+        {%endif%}
+
+        <form name="form" id="checkout-form"method="POST">
+            {% csrf_token %}
+
+            <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="firstName">Nombre</label>
+                {{ form.firstname }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="lastName">Apellidos</label>
+                {{ form.lastname }}
+            </div>
+            </div>
+
+            <div class="mb-3">
+            <label for="address">Dirección</label>
+            {{ form.main_address }}
+            </div>
+
+            <div class="mb-3">
+            <label for="address2">Detalles adicionales <span class="text-muted">(Opcional)</span></label>
+            {{ form.optional_address }}            
+            </div>
+
+            <div class="row">
+            <div class="col-md-5 mb-3">
+                <label for="country">País</label>
+                {{ form.country }}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="state">Ciudad</label>
+                {{ form.city }}
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="zip">Código Postal</label>
+                {{ form.cp }}
+            </div>
+            </div>
+            <hr class="mb-4">
+
+            <div class="custom-control custom-checkbox">
+            {{ form.same_billing_address }}
+            <label class="custom-control-label" for="same-address">Mi dirección de envío es la misma que mi dirección de facturación</label>
+            </div>
+            {%if authenticated%}
+                <div class="custom-control custom-checkbox">
+                    {{ form.save_info }}
+                <label class="custom-control-label" for="save-info">Guardar información para futuras compras</label>
+                </div>
+            {%endif%}
+            <hr class="mb-4">
+
+            <h4 class="mb-3">Métodos de pago</h4>
+
+            <div class="d-block my-3">
+            {% for value,name in form.fields.payment_option.choices %}
+            <div class="custom-control custom-radio">
+                <input id="{{value}}" name="payment_option" value="{{value}}"type="radio" class="custom-control-input" required>
+                <label class="custom-control-label" for="{{value}}"> {{ name }}</label>
+            </div>
+            {% endfor %}
+            </div>
+            <hr class="mb-4">
+            <!--<button class="btn btn-primary btn-lg btn-block" type="submit">Pasarela de Pago</button> -->
+            
+            {% if braintree_error %}
+            <div class="alert alert-danger fade in">
+                <button class="close" data-dismiss="alert">&times;</button>
+                {{ braintree_error|safe }}
+            </div>
+        {% endif %}
+        <div class="braintree-notifications"></div>
+        <div id="braintree-dropin"></div>
+        <input style="background-color: #0783ca" id="submit-button" class="btn btn-success btn-lg btn-block" type="button" value="Pagar" />
+
+        </form>
+        </div>
+    </div>
+
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">© 2022 - 2023 Acme Concerts</p>
+        <ul class="list-inline">
+        <li class="list-inline-item"><a href="#">Privacidad</a></li>
+        <li class="list-inline-item"><a href="#">Términos</a></li>
+        <li class="list-inline-item"><a href="#">Soporte</a></li>
+        </ul>
+    </footer>
+    </div>
+
+<script>
+    var checkout = $("#braintree-dropin")
+    var all_span_prices = document.getElementsByClassName("price-tickets");
+    calculate_total_ticket_price()
+    calculate_total_price()
+    
+    document.getElementById("T").checked = true;
+
+    function validateForm() {
+        let firstname = document.forms["form"]["firstname"].value;
+        let lastname = document.forms["form"]["lastname"].value;
+        let main_address = document.forms["form"]["main_address"].value;
+        let cp = document.forms["form"]["cp"].value;
+
+        if (firstname == "") {
+            alert("Por favor complete el campo 'Nombre'");
+            return false;
+        }
+        if (lastname == "") {
+            alert("Por favor complete el campo 'Apellidos'");
+            return false;
+        }
+        if (main_address == "") {
+            alert("Por favor complete el campo 'Dirección'");
+            return false;
+        }
+        if (cp == "") {
+            alert("Por favor complete el campo 'Codigo Postal'");
+            return false;
+        }
+
+        return true;
+    }
+
+    $('input:radio[name=payment_option]').change(function() {
+        if ($('#T').is(":checked")) {
+            checkout.removeClass("hidden")
+        }
+        else {
+            checkout.addClass("hidden")
+        }
+    });
+
+    function calculate_total_ticket_price(){
+        for(var i = 0; i < all_span_prices.length; i++) {
+            quantity = all_span_prices[i].getAttribute("num");
+            price_unit = all_span_prices[i].getAttribute("price");
+            all_span_prices[i].textContent = quantity * price_unit + ".00€";
+        }
+    }
+    function calculate_total_price(){
+        let total_tickets_price = 0.;
+        let tickets_price = 0.;
+        for(var i = 0; i < all_span_prices.length; i++) {
+
+            quantity = all_span_prices[i].getAttribute("num");
+            price_unit = all_span_prices[i].getAttribute("price");
+            tickets_price = parseFloat(quantity * price_unit);
+            total_tickets_price += tickets_price;
+        }
+
+        document.getElementById("total-price").textContent = total_tickets_price + ".00€";
+      }
+    
+    var braintree_client_token = "{{ braintree_client_token }}";
+    var button = document.querySelector('#submit-button');
+
+    braintree.dropin.create({
+        authorization: braintree_client_token,
+        container: '#braintree-dropin',
+        locale: 'es_ES',
+        card: {
+        cardholderName: {
+            required: false
+        }
+        }
+    }, function (createErr, instance) {
+        button.addEventListener('click', function () {
+            
+            card_option = $('#T').is(":checked")
+            instance.requestPaymentMethod(function (err, payload) {
+                if(validateForm()){
+                    if (card_option){
+                        $.ajax({
+                            type: 'POST',
+                            url: '{% url "payment" %}',
+                            data: {'paymentMethodNonce': payload.nonce,
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                    'firstname' : $('#id_firstname').val(),
+                                    'lastname' : $('#id_lastname').val(),
+                                    'main_address' : $('#id_main_address').val(),
+                                    'optional_address' : $('#id_optional_address').val(),
+                                    'country' : $('#id_country').val(),
+                                    'city' : $('#id_city').val(),
+                                    'cp' : $('#id_cp').val(),
+                                    'save_info' : $('#id_save_info').is(":checked"),
+                                    'payment_option' : $('#T').is(":checked")
+                                }
+                        }).done(function (result) {
+                            window.location.href = "/";
+                    });
+                    }
+                    else{
+                        $.ajax({
+                            type: 'POST',
+                            url: '{% url "payment" %}',
+                            data: {
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                    'firstname' : $('#id_firstname').val(),
+                                    'lastname' : $('#id_lastname').val(),
+                                    'main_address' : $('#id_main_address').val(),
+                                    'optional_address' : $('#id_optional_address').val(),
+                                    'country' : $('#id_country').val(),
+                                    'city' : $('#id_city').val(),
+                                    'cp' : $('#id_cp').val(),
+                                    'save_info' : $('#id_save_info').is(":checked"),
+                                    'payment_option' : $('#T').is(":checked")
+                                }
+                        }).done(function (result) {
+                            window.location.href = "/";
+                    });
+                }
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock content %}
