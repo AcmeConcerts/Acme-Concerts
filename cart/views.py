@@ -13,7 +13,7 @@ def index(request):
     return render(request, 'cart.html')
 
 
-class OrderSummaryView(View):
+class CartSummaryView(View):
     
     def get(self, *args, **kwargs):
         try:
@@ -132,6 +132,10 @@ def payment(request):
     except:
         messages.error(request, "No tienes ningun pedido activo")
         return redirect("cart")
+
+@login_required
+def summary(request):
+        return render(request, 'order-summary.html')
     
     
 
