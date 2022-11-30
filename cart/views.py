@@ -65,7 +65,6 @@ class CheckoutView(View):
                 braintree_client_token = braintree.ClientToken.generate({})
 
             form = CheckoutForm()
-
             order = Order.objects.get(user = self.request.user, ordered = False)
             tickets = OrderTicket.objects.filter(order=order)
             
@@ -138,7 +137,7 @@ def payment(request):
     try:
         order = Order.objects.get(user = request.user, ordered = False)
         if save_info == 'true':
-            billingAddress = BillingAddress(
+            billingAddress, created = BillingAddress.objects.get_or_create(
                 user = request.user,
                 firstname = firstname,
                 lastname = lastname,
@@ -148,9 +147,9 @@ def payment(request):
                 city = city, 
                 cp = cp
             )
-            billingAddress.save()
             order.billing_address = billingAddress
-            order.save()
+        order.ordered = True
+        order.save()
         if payment_option == True:
             nonce_from_the_client = request.POST['paymentMethodNonce'] 
             customer_kwargs = {
@@ -168,6 +167,7 @@ def payment(request):
                 }
             })
             print(result)
+        
         return redirect("cart")
         
     except:
