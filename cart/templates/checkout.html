@@ -184,6 +184,7 @@
         let country = span[id].getAttribute("country")
         let city = span[id].getAttribute("city")
         let cp = span[id].getAttribute("cp")
+        let save_info = document.getElementById("id_save_info")
 
         document.forms["form"]["firstname"].value = firstname;
         document.forms["form"]["lastname"].value = lastname;
@@ -192,7 +193,7 @@
         document.forms["form"]["country"].value = country;
         document.forms["form"]["city"].value = city;
         document.forms["form"]["cp"].value = cp;
-        
+        save_info.checked = true;
 
         document.forms["form"]["firstname"].disabled = true
         document.forms["form"]["lastname"].disabled = true
@@ -201,6 +202,7 @@
         document.forms["form"]["country"].disabled = true
         document.forms["form"]["city"].disabled = true
         document.forms["form"]["cp"].disabled = true
+        save_info.disabled = true
     }
     
     function clearForm(){

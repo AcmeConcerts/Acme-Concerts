@@ -96,8 +96,7 @@ def payment(request):
     try:
         order = Order.objects.get(user = request.user, ordered = False)
         if save_info == 'true':
-            print(request.user)
-            billingAddress = BillingAddress.objects.get_or_create(
+            billingAddress, created = BillingAddress.objects.get_or_create(
                 user = request.user,
                 firstname = firstname,
                 lastname = lastname,
@@ -107,9 +106,9 @@ def payment(request):
                 city = city, 
                 cp = cp
             )
-            billingAddress.save()
             order.billing_address = billingAddress
-            order.save()
+        order.ordered = True
+        order.save()
         if payment_option == True:
             nonce_from_the_client = request.POST['paymentMethodNonce'] 
             customer_kwargs = {
@@ -127,8 +126,7 @@ def payment(request):
                 }
             })
             print(result)
-        order.ordered = True
-        order.save()
+        
         return redirect("cart")
         
     except:
