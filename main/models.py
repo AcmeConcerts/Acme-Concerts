@@ -37,6 +37,10 @@ class Ticket(models.Model):
         return reverse("main:add-to-cart", kwargs={
             'slug': self.slug
         })
+    def get_fast_buy_url(self):
+        return reverse("cart:fast-checkout", kwargs={
+            'slug': self.slug
+        })
 
     def get_remove_from_cart_url(self):
         return reverse("main:remove-from-cart", kwargs={
@@ -57,7 +61,7 @@ class Order(models.Model):
 
 class OrderTicket(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,null=True)
     ordered = models.BooleanField(default=False)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)

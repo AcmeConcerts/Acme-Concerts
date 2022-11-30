@@ -81,6 +81,15 @@ class CheckoutView(View):
             return render(self.request, 'checkout.html',context)
         except:
             return redirect("/accounts/login")
+
+def fast_checkout(request,slug):
+    ticket = Ticket.objects.get(slug=slug)
+    order_ticket= OrderTicket.objects.create(ticket=ticket)
+    context = {
+                'order_ticket': order_ticket
+            }
+
+    return render(request, "fast_checkout.html", context)
         
 @login_required
 def payment(request):
