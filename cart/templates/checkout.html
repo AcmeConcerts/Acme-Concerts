@@ -26,7 +26,12 @@
                 <h6 class="my-0">{{ticket.ticket.title}}</h6>
                 <small class="text-muted">{{ticket.ticket.location}} - {{ticket.ticket.date}}</small>
             </div>
-            <span class="price-tickets" class="text-muted" num="{{ticket.quantity}}" price="{{ticket.ticket.price}}" ></span>
+            {% if ticket.customized  %}
+                <span class="price-tickets" class="text-muted" num="{{ticket.quantity}}" price="{{ticket.ticket.price_customized}}" ></span>
+            {% else %}
+                <span class="price-tickets" class="text-muted" num="{{ticket.quantity}}" price="{{ticket.ticket.price}}" ></span>
+            {% endif %}
+            
             </li>
             {% endfor %}
             
@@ -56,8 +61,21 @@
         </div>
 
         <div class="col-md-8 order-md-1">
-        <h4 class="mb-3">Dirección de envío</h4>
-        
+        <h4 style="display: inline-block;" class="mb-3">Dirección de envío</h4>
+        <p style="display: inline-block;margin-left:270px;" class="mb-3">Utilizar dirección: </p>
+        <li style="display: inline-block;" style="list-style-type: none;" class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Direcciones de envio guardadas
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if billing_addresses != null %}
+                    {% for billing_address in billing_addresses %}
+                        <a class="dropdown-item">{{billing_address.main_address}}</a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </li>
+
         <form name="form" id="checkout-form"method="POST">
             {% csrf_token %}
 
@@ -239,6 +257,7 @@
                                     'country' : $('#id_country').val(),
                                     'city' : $('#id_city').val(),
                                     'cp' : $('#id_cp').val(),
+                                    'save_info' : $('#id_save_info').is(":checked"),
                                     'payment_option' : $('#T').is(":checked")
                                 }
                         }).done(function (result) {
@@ -258,6 +277,7 @@
                                     'country' : $('#id_country').val(),
                                     'city' : $('#id_city').val(),
                                     'cp' : $('#id_cp').val(),
+                                    'save_info' : $('#id_save_info').is(":checked"),
                                     'payment_option' : $('#T').is(":checked")
                                 }
                         }).done(function (result) {

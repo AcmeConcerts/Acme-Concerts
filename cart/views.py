@@ -68,11 +68,14 @@ class CheckoutView(View):
 
             order = Order.objects.get(user = self.request.user, ordered = False)
             tickets = OrderTicket.objects.filter(order=order)
+            
+            billing_addresses = BillingAddress.objects.filter(user=self.request.user)
 
             context = {
                 'braintree_client_token': braintree_client_token,
                 'form': form,
                 'tickets': tickets,
+                'billing_addresses' : billing_addresses,
                 'tickets_num' : len(tickets)
             }
             return render(self.request, 'checkout.html',context)
@@ -89,21 +92,24 @@ def payment(request):
     city = request.POST['city']
     cp = request.POST['cp']
     payment_option = request.POST['payment_option']
+    save_info = request.POST['save_info']
+    
     try:
         order = Order.objects.get(user = request.user, ordered = False)
-        billingAddress = BillingAddress(
-            user = request.user,
-            firstname = firstname,
-            lastname = lastname,
-            main_address = main_address, 
-            optional_address = optional_address, 
-            country = country,
-            city = city, 
-            cp = cp
-        )
-        billingAddress.save()
-        order.billing_address = billingAddress
-        order.save()
+        if save_info == 'true':
+            billingAddress = BillingAddress(
+                user = request.user,
+                firstname = firstname,
+                lastname = lastname,
+                main_address = main_address, 
+                optional_address = optional_address, 
+                country = country,
+                city = city, 
+                cp = cp
+            )
+            billingAddress.save()
+            order.billing_address = billingAddress
+            order.save()
         if payment_option == True:
             nonce_from_the_client = request.POST['paymentMethodNonce'] 
             customer_kwargs = {
