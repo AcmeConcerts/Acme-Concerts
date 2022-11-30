@@ -40,7 +40,10 @@ def CartUpdate(request):
     order_ticket.save()
     return HttpResponse("Ok")
 
-        
+
+def search_order(request):
+
+    return HttpResponse("Ok")
 
 class CheckoutView(View):
     
