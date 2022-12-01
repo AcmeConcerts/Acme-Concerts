@@ -16,10 +16,9 @@
         <div class="col-md-4 order-md-2 mb-4">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">Tu carrito</span>
-            <span class="badge badge-secondary badge-pill">{{tickets_num}}</span>
+            <span class="badge badge-secondary badge-pill">1</span>
         </h4>
         <ul class="list-group mb-3">
-            {% for ticket in tickets %}
             <li class="list-group-item d-flex justify-content-between lh-condensed">
             
             <div>
@@ -33,7 +32,6 @@
             {% endif %}
             
             </li>
-            {% endfor %}
             
             <!--<li class="list-group-item d-flex justify-content-between bg-light">
             <div class="text-success">
@@ -62,6 +60,7 @@
 
         <div class="col-md-8 order-md-1">
         <h4 style="display: inline-block;" class="mb-3">Dirección de envío</h4>
+        {%if authenticated%}
         <p style="display: inline-block;margin-left:270px;" class="mb-3">Utilizar dirección: </p>
         <li style="display: inline-block;" style="list-style-type: none;" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -70,16 +69,17 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 {% if billing_addresses != null %}
                     {% for billing_address in billing_addresses %}
-                        <button id="{{forloop.counter0}}" onclick="fillForm(this.id)" class="dropdown-item">{{billing_address.main_address}}</button>
-                        <span class="info_billing_address" class="text-muted" firstname = "{{billing_address.firstname}}"
-                        lastname = "{{billing_address.lastname}}" main_address= "{{billing_address.main_address}}" optional_address = "{{billing_address.optional_address}}"
-                        country = "{{billing_address.country}}" city = "{{billing_address.city}}" cp="{{billing_address.cp}}"></span>                    
+                    <button id="{{forloop.counter0}}" onclick="fillForm(this.id)" class="dropdown-item">{{billing_address.main_address}}</button>
+                    <span class="info_billing_address" class="text-muted" firstname = "{{billing_address.firstname}}"
+                    lastname = "{{billing_address.lastname}}" main_address= "{{billing_address.main_address}}" optional_address = "{{billing_address.optional_address}}"
+                    country = "{{billing_address.country}}" city = "{{billing_address.city}}" cp="{{billing_address.cp}}"></span>   
                     {% endfor %}
                     <div class="dropdown-divider"></div>
                     <button onclick="clearForm()" class="dropdown-item">Nueva dirección</button>
                 {% endif %}
             </div>
         </li>
+        {%endif%}
 
         <form name="form" id="checkout-form"method="POST">
             {% csrf_token %}
@@ -120,14 +120,17 @@
             </div>
             </div>
             <hr class="mb-4">
+
             <div class="custom-control custom-checkbox">
             {{ form.same_billing_address }}
             <label class="custom-control-label" for="same-address">Mi dirección de envío es la misma que mi dirección de facturación</label>
             </div>
-            <div class="custom-control custom-checkbox">
-                {{ form.save_info }}
-            <label class="custom-control-label" for="save-info">Guardar información para futuras compras</label>
-            </div>
+            {%if authenticated%}
+                <div class="custom-control custom-checkbox">
+                    {{ form.save_info }}
+                <label class="custom-control-label" for="save-info">Guardar información para futuras compras</label>
+                </div>
+            {%endif%}
             <hr class="mb-4">
 
             <h4 class="mb-3">Métodos de pago</h4>
@@ -175,7 +178,6 @@
     
     document.getElementById("T").checked = true;
     let span = document.getElementsByClassName("info_billing_address")
-    
     function fillForm(id){
         let firstname = span[id].getAttribute("firstname")
         let lastname = span[id].getAttribute("lastname")
@@ -228,7 +230,7 @@
         let lastname = document.forms["form"]["lastname"].value;
         let main_address = document.forms["form"]["main_address"].value;
         let cp = document.forms["form"]["cp"].value;
-        
+
         if (firstname == "") {
             alert("Por favor complete el campo 'Nombre'");
             return false;

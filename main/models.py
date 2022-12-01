@@ -38,6 +38,7 @@ class Ticket(models.Model):
             'slug': self.slug
         })
 
+
     def get_remove_from_cart_url(self):
         return reverse("main:remove-from-cart", kwargs={
             'slug': self.slug
@@ -45,10 +46,10 @@ class Ticket(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField(default= timezone.now())
-    ordered = models.BooleanField(default = False)      
+    ordered = models.BooleanField(default = False)
     billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -56,8 +57,9 @@ class Order(models.Model):
 
 
 class OrderTicket(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,null=True)
     ordered = models.BooleanField(default=False)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
@@ -90,4 +92,4 @@ class BillingAddress(models.Model):
     cp = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.user.username
+        return f"Direccion de envio de {self.user.username}"

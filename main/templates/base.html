@@ -27,7 +27,7 @@
                 </button>
                 <form id="search-bar" class="align-self-md-center d-inline-flex form-control p-0 m-3 bg-light border-0" method="get">
                   <input class="form-control mr-sm-2" type="search" placeholder="Buscar" aria-label="Buscar" name="buscador" value ="{{ request.GET.buscador }}">
-                  <button class="btn btn-outline-success my-2 my-sm-0 m-2" type="submit" id="search-button">Buscar</button>
+                  <button class="btn my-2 my-sm-0 m-2" style="border: 1px solid rgb(255, 193, 7);" type="submit" id="search-button">Buscar</button>
                 </form>
               
                 <div class="collapse navbar-collapse align-content-center" id="navbarSupportedContent">
@@ -35,23 +35,21 @@
                     <li class="nav-item">
                       <a href="/cart" class="nav-link d-inline-block"><img id="cart" src="/static/icons/shopping-cart.png" class="" alt="Mi carrito"></a>
                     </li>
+                    {% if user.is_authenticated %}
+                      <li style="margin-right:50px" class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Hola {{user}}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <a id="{{user}}" class="dropdown-item" href="/accounts/logout">Cerrar Sesión</a>
+                          <a id="{{user}}" class="dropdown-item" href="/cart/order-summary">Seguimiento de pedidos</a>
+                        </div>
+                      </li>
+                    {% else %}
                     <li class="nav-item">
-                      <a class="nav-link" href="/accounts/login">Iniciar sesión</a>
+                      <a id="{{user}}" class="nav-link" href="/accounts/login">Iniciar sesión</a>
                     </li>
-                    <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                      </a>
-                      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                      </div>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link disabled" href="#">Disabled</a>
-                    </li>
+                    {% endif %}
                   </ul>
                 </div>
               </nav>
@@ -162,6 +160,9 @@
                   </p>
                   <p>
                     <a href="/accounts/signup" class="text-reset">Registrarse</a>
+                  </p>
+                  <p>
+                    <a href="/cart/order-summary" class="text-reset">Seguimiento de pedidos</a>
                   </p>
 
                 </div>

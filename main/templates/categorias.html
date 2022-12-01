@@ -15,13 +15,13 @@
                     <div class="card">
 
                         <div class="view overlay">
-                            {% if ticket.stock == 0 %}
-                            <img src="/resources/images/agotado.png" class="card-img-top">
+                        {% if ticket.stock == 0 %}
+                            <img src="/resources/images/agotado.png" style="object-fit: cover; width: 305px;height: 200px;" class="card-img-top">
                             <a href="{{ticket.get_absolute_url}}">
                                 <div class="mask rgba-white-slight"></div>
                             </a>
                             {% else %}
-                            <img src="{{MEDIA_URL}}{{ticket.image}}" class="card-img-top">
+                            <img src="{{MEDIA_URL}}{{ticket.image}}" style="object-fit: cover; width: 305px;height: 200px;" class="card-img-top">
                             <a href="{{ticket.get_absolute_url}}">
                                 <div class="mask rgba-white-slight"></div>
                             </a>
