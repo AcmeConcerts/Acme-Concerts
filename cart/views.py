@@ -196,6 +196,17 @@ class Summary(DetailView):
             }
         return context
 
+    def get(self, request, *args, **kwargs):
+        from django.http import Http404
+        try:
+            self.object = self.get_object()
+            context = self.get_context_data(object=self.object)
+            return self.render_to_response(context)
+        except Http404:
+            # redirect is here
+            messages.error(request, "No hay ninguna orden con esa ID.")
+            return redirect('/cart/order-summary')
+
     
     
 

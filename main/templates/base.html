@@ -36,12 +36,14 @@
                       <a href="/cart" class="nav-link d-inline-block"><img id="cart" src="/static/icons/shopping-cart.png" class="" alt="Mi carrito"></a>
                     </li>
                     {% if user.is_authenticated %}
-                      <li class="nav-item dropdown">
+                      <li style="margin-right:50px" class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Hola {{user}}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                           <a id="{{user}}" class="dropdown-item" href="/accounts/logout">Cerrar Sesión</a>
+                          <a id="{{user}}" class="dropdown-item" href="/cart/order-summary">Seguimiento de pedidos</a>
+                        </div>
                       </li>
                     {% else %}
                     <li class="nav-item">
@@ -158,6 +160,9 @@
                   </p>
                   <p>
                     <a href="/accounts/signup" class="text-reset">Registrarse</a>
+                  </p>
+                  <p>
+                    <a href="/cart/order-summary" class="text-reset">Seguimiento de pedidos</a>
                   </p>
 
                 </div>
