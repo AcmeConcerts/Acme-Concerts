@@ -110,7 +110,9 @@ def fast_checkout(request,slug):
     form = CheckoutForm()
 
     ticket = Ticket.objects.get(slug=slug)
-    order_ticket= OrderTicket.objects.create(ticket=ticket)
+    order = Order.objects.create(ordered=False)
+    order_ticket= OrderTicket.objects.create(ticket=ticket,order = order)
+    
     billing_addresses = []
     if(request.user.is_authenticated):
         billing_addresses = BillingAddress.objects.filter(user=request.user)
@@ -121,7 +123,9 @@ def fast_checkout(request,slug):
                 'form': form,
                 'billing_addresses' : billing_addresses,
                 'ticket': order_ticket,
-                'authenticated': request.user.is_authenticated
+                'authenticated': request.user.is_authenticated,
+                'order_id': order.id
+
             }
     return render(request, "fast_checkout.html", context)
     
