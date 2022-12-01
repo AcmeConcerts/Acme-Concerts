@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, View
@@ -152,7 +153,9 @@ def payment(request):
                 cp = cp
             )
             order.billing_address = billingAddress
+
         order.ordered = True
+        order.ordered_date = timezone.now()
         order.save()
         if payment_option == True:
             nonce_from_the_client = request.POST['paymentMethodNonce'] 
