@@ -10,5 +10,5 @@ urlpatterns = [
     path('order-summary/<pk>/', views.Summary.as_view(), name='summary'),
     path('cartupdate', views.CartUpdate, name='cartupdate'),
     path('fast-checkout/<slug>/', views.fast_checkout, name="fast-checkout"),
-    path('order', views.search_order,name='order-tracking')
+    path('order-summary', views.search_order,name='order-searcher')
     ]

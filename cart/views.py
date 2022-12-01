@@ -43,7 +43,8 @@ def CartUpdate(request):
 
 def search_order(request):
 
-    return HttpResponse("Ok")
+
+    return render(request, 'order_search.html')
 
 class CheckoutView(View):
     

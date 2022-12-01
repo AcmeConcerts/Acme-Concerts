@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block content %}
+    <style>
+        .Card {
+            padding: 1px;
+            border-radius: var(--border-radius);
+            background: linear-gradient(-67deg, rgba(#c8d8e7, .7), rgba(255,255,255,.8));
+            overflow: hidden;
+            box-shadow: 
+                -2px -2px 6px rgba(#fff, .6),
+                2px 2px 12px #c8d8e7;
+            width: 100%;
+        }
+        .InputContainer {
+            box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+            
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            width: 100%;
+
+        }
+
+        * {
+            -webkit-font-smoothing: antialiased;
+
+            }
+
+        :root {
+        --border-radius: 10px;
+        }
+
+        body, html {
+            background: #e2e9f4;
+            display: grid;
+            height: 100%;
+            grid-template: 1fr/100%;
+            place-items: center;
+        }
+
+        
+
+        .CardInner {
+            padding: 16px 16px;
+            background-color: #e2e9f4;
+            border-radius: var(--border-radius);
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .Icon {
+            min-width: 46px;
+            min-height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius);
+            margin-right: 12px;
+            box-shadow: 
+                -2px -2px 6px rgba(#fff, .6),
+                2px 2px 12px #c8d8e7;
+                
+            svg {
+                transform: translate(-1px, -1px);    
+            }
+        }
+
+
+        input {
+        background-color: #e3edf7;
+        padding: 16px 32px;
+        border: none;
+        display: block;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 600;
+        -webkit-appearance: none;
+        transition: all 240ms ease-out;
+        width: 100%;
+        
+        outline: none;
+
+        
+        }
+        
+        
+    </style>
+
+  <section class="vh-100">
+    <div class="container h-50">
+      <div class="row d-flex justify-content-center align-items-center h-80">
+        <div class="col">
+          <p><span class="h2">Buscar estado de una orden de compra</span></p>
+
+
+
+
+            <div class="Card">
+                <div class="CardInner">
+                    <div class="container">
+                      <div class="Icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#657789" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                      </div>
+                      <div class="InputContainer">
+                        <input id="searcher-order" placeholder="ID de la orden"/>
+                      </div>
+                    </div>
+                   </div>
+                </div>
+              </div>
+
+            </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <script>
+        // Get the input field
+        var input = document.getElementById("searcher-order");
+
+        // Execute a function when the user presses a key on the keyboard
+        input.addEventListener("keypress", function(event) {
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            
+            window.location.href = "order-summary/"+input.value
+            
+        }
+        });
+    </script>
+
+
+
+  {% endblock content %}
+  
