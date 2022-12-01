@@ -46,7 +46,12 @@
                         <a href="{% url 'main:remove-from-cart' ticket.ticket.slug%}">Eliminar</a>
                         
                       </td>
-                      <td class="price_unit" style="text-align: center; vertical-align: middle;">{{ ticket.ticket.price }}0€</td>
+                      {% if ticket.customized  %}
+                        <td class="price_unit" style="text-align: center; vertical-align: middle;">{{ ticket.ticket.price_customized }}0€</td>
+                      {% else %}
+                        <td class="price_unit" style="text-align: center; vertical-align: middle;">{{ ticket.ticket.price }}0€</td>
+                      {% endif %}
+                      
                       <td class="price" id="{{forloop.counter0}}" style="text-align: center; vertical-align: middle;"></td>
                     </tr>
                   </div>
