@@ -44,7 +44,8 @@ def CartUpdate(request):
 
 def search_order(request):
 
-    return HttpResponse("Ok")
+
+    return render(request, 'order_search.html')
 
 class CheckoutView(View):
     
@@ -110,7 +111,9 @@ def fast_checkout(request,slug):
     form = CheckoutForm()
 
     ticket = Ticket.objects.get(slug=slug)
-    order_ticket= OrderTicket.objects.create(ticket=ticket)
+    order = Order.objects.create(ordered=False)
+    order_ticket= OrderTicket.objects.create(ticket=ticket,order = order)
+    
     billing_addresses = []
     if(request.user.is_authenticated):
         billing_addresses = BillingAddress.objects.filter(user=request.user)
@@ -121,7 +124,9 @@ def fast_checkout(request,slug):
                 'form': form,
                 'billing_addresses' : billing_addresses,
                 'ticket': order_ticket,
-                'authenticated': request.user.is_authenticated
+                'authenticated': request.user.is_authenticated,
+                'order_id': order.id
+
             }
     return render(request, "fast_checkout.html", context)
     
@@ -202,6 +207,17 @@ class Summary(DetailView):
                 'tickets' : tickets
             }
         return context
+
+    def get(self, request, *args, **kwargs):
+        from django.http import Http404
+        try:
+            self.object = self.get_object()
+            context = self.get_context_data(object=self.object)
+            return self.render_to_response(context)
+        except Http404:
+            # redirect is here
+            messages.error(request, "No hay ninguna orden con esa ID.")
+            return redirect('/cart/order-summary')
 
     
     
