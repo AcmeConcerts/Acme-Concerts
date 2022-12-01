@@ -132,16 +132,13 @@ class HomeView(ListView):
         context["MEDIA_URL"] = settings.MEDIA_URL
 
         queryset = self.request.GET.get("buscador") 
-        
-        if queryset: #Si no hay busqueda el capitalize da error
-            queryset.capitalize() #El capitalize es para las categorias
 
         category_reverse = dict((v, k) for k, v in CATEGORY)
         try:
             if queryset: 
                 context["tickets"] = Ticket.objects.filter(
                     Q(title__icontains = queryset) |
-                    Q(category__icontains = category_reverse[queryset]) |
+                    Q(category__icontains = category_reverse[queryset.capitalize()]) |
                     Q(slug__icontains = queryset)
                 ).distinct()
             else:
@@ -154,5 +151,5 @@ class HomeView(ListView):
                 ).distinct()
             else:
                 context["tickets"] = Ticket.objects.all()
-
+        
         return context
