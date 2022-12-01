@@ -178,12 +178,14 @@ def payment(request):
                 }
             })
             print(result)
-        mail = EmailMessage(
-            'Compra realizada',
-            'Enhorabuena, has realizado una compra en Acme Concerts. Te adjuntamos la factura de compra de tu pedido. ¡Ahora solo queda disfrutar!',
-            to=[request.user.email]
-        )
-        mail.send()
+        if (request.user.is_authenticated):
+            mail = EmailMessage(
+                'Compra realizada',
+                'Enhorabuena, has realizado una compra en Acme Concerts. Te adjuntamos la factura de compra de tu pedido. ¡Ahora solo queda disfrutar!',
+                to=[request.user.email]
+            )
+            mail.send()
+        
         return redirect("cart")
         
     except:
