@@ -125,13 +125,11 @@ def fast_checkout(request,slug):
                 'ticket': order_ticket,
                 'authenticated': request.user.is_authenticated,
                 'order_id': order.id
-
             }
     return render(request, "fast_checkout.html", context)
     
     
         
-@login_required
 def payment(request):
     firstname = request.POST['firstname']
     lastname = request.POST['lastname']
@@ -142,9 +140,10 @@ def payment(request):
     cp = request.POST['cp']
     payment_option = request.POST['payment_option']
     save_info = request.POST['save_info']
+    order_id = request.POST['order_id']
     
     try:
-        order = Order.objects.get(user = request.user, ordered = False)
+        order = Order.objects.get(id= order_id)
         if save_info == 'true':
             billingAddress, created = BillingAddress.objects.get_or_create(
                 user = request.user,
@@ -192,7 +191,7 @@ class Summary(DetailView):
         context = super().get_context_data(**kwargs)
         id = self.kwargs['pk']
         context["MEDIA_URL"] = settings.MEDIA_URL
-        order = Order.objects.get(user = self.request.user, id=id)
+        order = Order.objects.get(id=id)
         tickets = OrderTicket.objects.filter(order=order)
         context = {
                 'order' : order,

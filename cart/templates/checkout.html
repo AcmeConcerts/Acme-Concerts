@@ -311,7 +311,8 @@
                                     'city' : $('#id_city').val(),
                                     'cp' : $('#id_cp').val(),
                                     'save_info' : $('#id_save_info').is(":checked"),
-                                    'payment_option' : $('#T').is(":checked")
+                                    'payment_option' : $('#T').is(":checked"),
+                                    'order_id': {{order_id}}
                                 }
                         }).done(function (result) {
                             window.location.href = "/cart/order-summary/{{order_id}}";
@@ -331,7 +332,8 @@
                                     'city' : $('#id_city').val(),
                                     'cp' : $('#id_cp').val(),
                                     'save_info' : $('#id_save_info').is(":checked"),
-                                    'payment_option' : $('#T').is(":checked")
+                                    'payment_option' : $('#T').is(":checked"),
+                                    'order_id': {{order_id}}
                                 }
                         }).done(function (result) {
                             window.location.href = "/cart/order-summary/{{order_id}}";

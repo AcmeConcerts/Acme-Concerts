@@ -60,8 +60,8 @@
 
         <div class="col-md-8 order-md-1">
         <h4 style="display: inline-block;" class="mb-3">Dirección de envío</h4>
-        <p style="display: inline-block;margin-left:270px;" class="mb-3">Utilizar dirección: </p>
         {%if authenticated%}
+        <p style="display: inline-block;margin-left:270px;" class="mb-3">Utilizar dirección: </p>
         <li style="display: inline-block;" style="list-style-type: none;" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Direcciones de envio guardadas
@@ -261,10 +261,11 @@
                                     'city' : $('#id_city').val(),
                                     'cp' : $('#id_cp').val(),
                                     'save_info' : $('#id_save_info').is(":checked"),
-                                    'payment_option' : $('#T').is(":checked")
+                                    'payment_option' : $('#T').is(":checked"),
+                                    'order_id': {{order_id}}
                                 }
                         }).done(function (result) {
-                            window.location.href = "/";
+                            window.location.href = "/cart/order-summary/{{order_id}}";
                     });
                     }
                     else{
@@ -281,10 +282,11 @@
                                     'city' : $('#id_city').val(),
                                     'cp' : $('#id_cp').val(),
                                     'save_info' : $('#id_save_info').is(":checked"),
-                                    'payment_option' : $('#T').is(":checked")
+                                    'payment_option' : $('#T').is(":checked"),
+                                    'order_id': {{order_id}}
                                 }
                         }).done(function (result) {
-                            window.location.href = "/";
+                            window.location.href = "/cart/order-summary/{{order_id}}";
                     });
                 }
                 }
