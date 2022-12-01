@@ -25,8 +25,8 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon"></span>
                 </button>
-                <form id="search-bar" class="align-self-md-center d-inline-flex form-control p-0 m-3 bg-light border-0">
-                  <input class="form-control mr-sm-2" type="search" placeholder="Buscar" aria-label="Buscar">
+                <form id="search-bar" class="align-self-md-center d-inline-flex form-control p-0 m-3 bg-light border-0" method="get">
+                  <input class="form-control mr-sm-2" type="search" placeholder="Buscar" aria-label="Buscar" name="buscador" value ="{{ request.GET.buscador }}">
                   <button class="btn btn-outline-success my-2 my-sm-0 m-2" type="submit" id="search-button">Buscar</button>
                 </form>
               
