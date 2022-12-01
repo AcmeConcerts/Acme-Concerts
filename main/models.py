@@ -46,7 +46,6 @@ class Ticket(models.Model):
 
 
 class Order(models.Model):
-    id= models.BigIntegerField(auto_created=True, primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField(default= timezone.now())

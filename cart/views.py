@@ -178,14 +178,16 @@ def payment(request):
         messages.error(request, "No tienes ningun pedido activo")
         return redirect("cart")
 
-@login_required
-class summary(DetailView):
+
+class Summary(DetailView):
     model = Order
     template_name = "order-summary.html"
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["MEDIA_URL"] = settings.MEDIA_URL
         return context
+
     
     
 
