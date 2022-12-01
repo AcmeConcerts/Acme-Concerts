@@ -12,36 +12,38 @@
               <div class="row">
                 <div class="col mb-3">
                   <p class="small text-muted mb-1">Fecha</p>
-                  <p>10 April 2021</p>
+                  <p>{{order.ordered_date}}</p>
                 </div>
                 <div class="col mb-3">
                   <p class="small text-muted mb-1">ID del pedido</p>
-                  <p>012j1gvs356c</p>
+                  <p>{{order.id}}</p>
                 </div>
               </div>
   
               <div class="mx-n5 px-5 py-4" style="background-color: #f2f2f2;">
+                {% for ticket in tickets %}
                 <div class="row">
                   <div class="col-md-8 col-lg-9">
-                    <p>BEATS Solo 3 Wireless Headphones</p>
+                    <p>{{ticket.ticket.title}} | {{ticket.quantity}} entrada/s</p>
                   </div>
                   <div class="col-md-4 col-lg-3">
-                    <p>£299.99</p>
+                    <p class="ticket" quantity="{{ticket.quantity}}">{{ticket.ticket.price}}0 €</p>
                   </div>
                 </div>
+                {% endfor %}
                 <div class="row">
                   <div class="col-md-8 col-lg-9">
-                    <p class="mb-0">Shipping</p>
+                    <p class="mb-0">Envío</p>
                   </div>
                   <div class="col-md-4 col-lg-3">
-                    <p class="mb-0">£33.00</p>
+                    <p class="mb-0">00.00 €</p>
                   </div>
                 </div>
               </div>
   
               <div class="row my-4">
                 <div class="col-md-4 offset-md-8 col-lg-3 offset-lg-9">
-                  <p class="lead fw-bold mb-0" >£262.99</p>
+                  <p id="total_price" class="lead fw-bold mb-0" ></p>
                 </div>
               </div>
   
@@ -75,7 +77,7 @@
                 </div>
               </div>
   
-              <p class="mt-4 pt-2 mb-0">Want any help? <a href="#!" style="color: rgb(255, 193, 7);">Please contact us</a></p>
+              <p class="mt-4 pt-2 mb-0">¿Necesitas ayuda? <a href="#!" style="color: rgb(255, 193, 7);">Contacta con nosotros</a></p>
   
             </div>
           </div>
@@ -83,5 +85,26 @@
       </div>
     </div>
   </section>
+
+  <script>
+    var total_price = document.getElementById("total_price");
+    var all_tickets = document.getElementsByClassName("ticket");
+
+    calculate_total_price()
+
+    function calculate_total_price(){
+      let total_tickets_price = 0.;
+      let tickets_price = 0.;
+      for(var i = 0; i < all_tickets.length; i++) {
+        ticket_price = parseFloat(all_tickets[i].textContent.substring(0,5));
+        numTickets = all_tickets[i].getAttribute("quantity")
+
+        tickets_price = ticket_price * numTickets
+        console.log(tickets_price)
+        total_tickets_price += tickets_price;
+      }
+      total_price.textContent = total_tickets_price + ".00€";
+    }
+  </script>
   {% endblock content %}
   
