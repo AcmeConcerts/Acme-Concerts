@@ -183,10 +183,17 @@ def payment(request):
 class Summary(DetailView):
     model = Order
     template_name = "order-summary.html"
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        id = self.kwargs['pk']
         context["MEDIA_URL"] = settings.MEDIA_URL
+        order = Order.objects.get(user = self.request.user, id=id)
+        tickets = OrderTicket.objects.filter(order=order)
+        context = {
+                'order' : order,
+                'tickets' : tickets
+            }
         return context
 
     

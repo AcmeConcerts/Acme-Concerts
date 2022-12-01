@@ -57,6 +57,7 @@ class Order(models.Model):
 
 
 class OrderTicket(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,null=True)
     ordered = models.BooleanField(default=False)
