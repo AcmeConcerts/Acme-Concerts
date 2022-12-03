@@ -203,6 +203,12 @@ class Summary(DetailView):
         context["MEDIA_URL"] = settings.MEDIA_URL
         order = Order.objects.get(id=id)
         tickets = OrderTicket.objects.filter(order=order)
+        print(tickets)
+        for ticket in tickets:
+            ticket.ticket.stock -= ticket.quantity
+            print(ticket.ticket.stock)
+            ticket.ticket.save()
+
         context = {
                 'order' : order,
                 'tickets' : tickets

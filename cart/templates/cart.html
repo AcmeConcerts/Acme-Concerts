@@ -40,7 +40,7 @@
                         {% endif %}
                         </td>
                       <td style="text-align: center; vertical-align: middle;">
-                        <input name="{{ ticket.ticket.slug }}" class="quantity" style="text-align: center; width:40px;" type="number" value="{{ ticket.quantity }}" min="1" max="100">
+                        <input name="{{ ticket.ticket.slug }}" class="quantity" style="text-align: center; width:40px;" type="number" value="{{ ticket.quantity }}" min="1" max="{{ ticket.ticket.stock }}">
 
                         <br>
                         <a href="{% url 'main:remove-from-cart' ticket.ticket.slug%}">Eliminar</a>
