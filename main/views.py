@@ -51,6 +51,18 @@ def products_rock(request):
     }
     return render(request, "categorias.html", context)
 
+def privacidad(request):
+    context = {
+        "MEDIA_URL" : settings.MEDIA_URL,
+    }
+    return render(request, "privacidad.html", context)
+
+def terminos_servicio(request):
+    context = {
+        "MEDIA_URL" : settings.MEDIA_URL,
+    }
+    return render(request, "terminosServicio.html", context)
+
 @login_required
 def add_to_cart(request, slug):
     ticket = get_object_or_404(Ticket, slug=slug)
