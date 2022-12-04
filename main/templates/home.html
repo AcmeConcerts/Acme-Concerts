@@ -85,7 +85,7 @@
               <div class="view overlay">
                 {% if ticket.stock == 0 %}
                 <a href="{{ticket.get_absolute_url}}">
-                  <img src="/resources/images/agotado.png" class="card-img-top">
+                  <img src="/resources/images/agotado.png" style="object-fit: cover; width: 305px;height: 200px;"  class="card-img-top">
                 </a>
                 {% else %}
                 <a href="{{ticket.get_absolute_url}}">
