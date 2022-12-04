@@ -177,7 +177,6 @@ def payment(request):
                     "submit_for_settlement": True
                 }
             })
-            print(result)
         if (request.user.is_authenticated):
             tickets = OrderTicket.objects.filter(order=order)
             country_dic = dict((v, k) for v, k in COUNTRY_CHOICES)
@@ -220,10 +219,8 @@ class Summary(DetailView):
         context["MEDIA_URL"] = settings.MEDIA_URL
         order = Order.objects.get(id=id)
         tickets = OrderTicket.objects.filter(order=order)
-        print(tickets)
         for ticket in tickets:
             ticket.ticket.stock -= ticket.quantity
-            print(ticket.ticket.stock)
             ticket.ticket.save()
 
         context = {
