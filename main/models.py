@@ -38,6 +38,9 @@ class Ticket(models.Model):
             'slug': self.slug
         })
 
+    def get_customized_add_to_cart_url(self):
+        return reverse("customize:add-customized-to-cart", kwargs={ 'slug': self.slug })
+
     def get_remove_from_cart_url(self):
         return reverse("main:remove-from-cart", kwargs={
             'slug': self.slug
@@ -48,13 +51,25 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField(default= timezone.now())
-    ordered = models.BooleanField(default = False)      
+    ordered = models.BooleanField(default = False)
 
     def __str__(self):
         return self.user.username
 
 
 class OrderTicket(models.Model):
+    COLOR = (
+        ('W', 'Blanco'),('B', 'Negro'), ('G', 'Verde')
+    )
+
+    TYPING = (
+        ('CS', 'Comic sans'), ('A', 'Arial'), ('C', 'Calibri')
+    )
+
+    MODEL = (
+    ('1', 'Modelo 1'), ('2', 'Modelo 2'), ('3', 'Modelo 3')
+    )
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
@@ -62,6 +77,10 @@ class OrderTicket(models.Model):
     quantity = models.IntegerField(default=1)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
     customized = models.BooleanField(default=False)
+
+    model = models.IntegerField(default=0,choices=MODEL, null=True)
+    color = models.CharField(default='W', choices=COLOR, max_length=30, null=True)
+    typing = models.CharField(default='CS', choices=TYPING, max_length=30, null=True)
 
     def __str__(self):
         return f"{self.quantity} of {self.ticket.title}"

@@ -52,41 +52,28 @@
 
       </div>
       <!--Grid column-->
-      <form class="justify-content-left">
+      <form action="{{object.get_customized_add_to_cart_url}}" method="POST" class="justify-content-left">
+        {% csrf_token %}
         <div class="row row-cols-3">
           <div class="col mb-3">
-            <label for="" class="form-label mx-2">Modelo</label>
-            <select class="form-select w-100" name="model" id="model">
-              <option selected>Elige uno</option>
-              <option value="model1">Modelo 1</option>
-              <option value="model2">Modelo 2</option>
-              <option value="model3">Modelo 3</option>
-            </select>
+            <label for="model" class="form-label mx-2">Modelo</label>
+            {{ form.model }}
           </div>
           <div class="col mb-3">
-            <label for="" class="form-label mx-2">Color</label>
-            <select class="form-select w-100" name="color" id="model">
-              <option selected>Elige uno</option>
-              <option value="model1">Color 1</option>
-              <option value="model2">Color 2</option>
-              <option value="model3">Color 3</option>
-            </select>
+            <label for="color" class="form-label mx-2">Color</label>
+            {{ form.color }}
           </div>
           <div class="col mb-3">
-            <label for="" class="form-label mx-2">Tipografía</label>
-            <select class="form-select w-100" name="typing" id="model">
-              <option selected>Elige uno</option>
-              <option value="model1">Comic Sans</option>
-              <option value="model2">Calibri</option>
-              <option value="model3">Arial</option>
-            </select>
+            <label for="typing" class="form-label mx-2">Tipografía</label>
+            {{ form.typing }}
           </div>
         </div>
+
         <div class="row row-cols-1">
           <div class="col text-center"> 
-            <button class="col btn btn-primary btn-md my-0 p" type="submit">
-            Añadir al carrito
-            <i class="fas fa-shopping-cart ml-1"></i>
+            <button class="btn btn-primary btn-md my-0 p" type="submit">
+              Añadir al carrito
+              <i class="fas fa-shopping-cart ml-1"></i>
             </button>
           </div> 
         </div>
