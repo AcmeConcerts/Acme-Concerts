@@ -51,6 +51,9 @@ def products_rock(request):
     }
     return render(request, "categorias.html", context)
 
+def devoluciones(request):
+    return render(request, "politica_devoluciones.html")
+
 @login_required
 def add_to_cart(request, slug):
     ticket = get_object_or_404(Ticket, slug=slug)
