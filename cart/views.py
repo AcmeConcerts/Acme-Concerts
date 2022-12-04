@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, View
 from django.contrib import messages
-from AcmeConcerts.forms import CheckoutForm
+from AcmeConcerts.forms import CITY_CHOICES, COUNTRY_CHOICES, CheckoutForm
 from main.models import BillingAddress, Order, OrderTicket, Ticket
 from django.contrib.auth.decorators import login_required
 import braintree
@@ -179,9 +179,26 @@ def payment(request):
             })
             print(result)
         if (request.user.is_authenticated):
+            tickets = OrderTicket.objects.filter(order=order)
+            country_dic = dict((v, k) for v, k in COUNTRY_CHOICES)
+            city_dic = dict((v, k) for v,k in CITY_CHOICES) 
+            message = 'Enhorabuena, has realizado una compra en Acme Concerts. Te adjuntamos la factura de compra de tu pedido. ¡Ahora solo queda disfrutar!\n\n'
+            total_price = 0.
+            
+            for ticket in tickets:
+                price = ticket.ticket.price * float(ticket.quantity)
+                total_price += price
+                message += ticket.ticket.title + "             Cantidad: " + str(ticket.quantity) + "             Precio: " + str(price) + "\n"
+            message+= "El importe total es de: " + str(total_price) + "0€\n"
+            if (order.billing_address.optional_address != ""):
+                message+= "Tus entradas serán enviadas a " + order.billing_address.main_address + " más especificamente a" + order.billing_address.optional_address + " en " + city_dic.get(order.billing_address.city) +" con codigo postal " + order.billing_address.cp + ", " + country_dic.get(order.billing_address.country)
+            
+            else:
+                message+= "Tus entradas serán enviadas a " + order.billing_address.main_address + " en " + city_dic.get(order.billing_address.city) +" con codigo postal " + order.billing_address.cp + ", " + country_dic.get(order.billing_address.country)
+
             mail = EmailMessage(
                 'Compra realizada',
-                'Enhorabuena, has realizado una compra en Acme Concerts. Te adjuntamos la factura de compra de tu pedido. ¡Ahora solo queda disfrutar!',
+                message,
                 to=[request.user.email]
             )
             mail.send()
