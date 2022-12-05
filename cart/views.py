@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, View
@@ -7,7 +8,7 @@ from main.models import BillingAddress, Order, OrderTicket, Ticket
 from django.contrib.auth.decorators import login_required
 import braintree
 from django.conf import settings
-
+from django.core.mail import EmailMessage
 
 def index(request):
     return render(request, 'cart.html')
@@ -156,7 +157,9 @@ def payment(request):
                 cp = cp
             )
             order.billing_address = billingAddress
+
         order.ordered = True
+        order.ordered_date = timezone.now()
         order.save()
         if payment_option == True:
             nonce_from_the_client = request.POST['paymentMethodNonce'] 
@@ -175,6 +178,13 @@ def payment(request):
                 }
             })
             print(result)
+        if (request.user.is_authenticated):
+            mail = EmailMessage(
+                'Compra realizada',
+                'Enhorabuena, has realizado una compra en Acme Concerts. Te adjuntamos la factura de compra de tu pedido. ¡Ahora solo queda disfrutar!',
+                to=[request.user.email]
+            )
+            mail.send()
         
         return redirect("cart")
         
@@ -193,6 +203,12 @@ class Summary(DetailView):
         context["MEDIA_URL"] = settings.MEDIA_URL
         order = Order.objects.get(id=id)
         tickets = OrderTicket.objects.filter(order=order)
+        print(tickets)
+        for ticket in tickets:
+            ticket.ticket.stock -= ticket.quantity
+            print(ticket.ticket.stock)
+            ticket.ticket.save()
+
         context = {
                 'order' : order,
                 'tickets' : tickets

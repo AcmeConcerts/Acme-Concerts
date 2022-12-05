@@ -116,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'CET'
 
 USE_I18N = True
 
@@ -150,9 +150,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = DEFAULT_FROM_EMAIL = 'acmeconcerts.contact@gmail.com'
+EMAIL_HOST_USER = DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'acmeconcerts.contact@gmail.com'
 EMAIL_HOST_PASSWORD = 'uhgixuniodahuftd'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ''
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'resources')
 

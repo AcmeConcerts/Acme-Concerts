@@ -5,20 +5,13 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.contrib import messages
+from django.db.models import Q
 # Create your views here.
 
 def index(request):
     return render(request, 'base.html')
 
-def products(request):
-    context = {
-        'items': Ticket.objects.all()
-    }
-    #TODO
-    return render(request, "base.html", context)
-
 def products_reggaeton(request):
-    print(Ticket.objects.values())
     context = {
         'items': Ticket.objects.filter(category = 'Rg'),
         "MEDIA_URL" : settings.MEDIA_URL,
@@ -27,7 +20,6 @@ def products_reggaeton(request):
     return render(request, "categorias.html", context)
 
 def products_pop(request):
-    print(Ticket.objects.values())
     context = {
         'items': Ticket.objects.filter(category = 'P'),
         "MEDIA_URL" : settings.MEDIA_URL,
@@ -36,7 +28,6 @@ def products_pop(request):
     return render(request, "categorias.html", context)
 
 def products_indie(request):
-    print(Ticket.objects.values())
     context = {
         'items': Ticket.objects.filter(category = 'I'),
         "MEDIA_URL" : settings.MEDIA_URL,
@@ -45,7 +36,6 @@ def products_indie(request):
     return render(request, "categorias.html", context)
 
 def products_hiphop(request):
-    print(Ticket.objects.values())
     context = {
         'items': Ticket.objects.filter(category = 'HH'),
         "MEDIA_URL" : settings.MEDIA_URL,
@@ -54,7 +44,6 @@ def products_hiphop(request):
     return render(request, "categorias.html", context)
 
 def products_rock(request):
-    print(Ticket.objects.values())
     context = {
         'items': Ticket.objects.filter(category = 'r'),
         "MEDIA_URL" : settings.MEDIA_URL,
@@ -141,4 +130,26 @@ class HomeView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["MEDIA_URL"] = settings.MEDIA_URL
+
+        queryset = self.request.GET.get("buscador") 
+
+        category_reverse = dict((v, k) for k, v in CATEGORY)
+        try:
+            if queryset: 
+                context["tickets"] = Ticket.objects.filter(
+                    Q(title__icontains = queryset) |
+                    Q(category__icontains = category_reverse[queryset.capitalize()]) |
+                    Q(slug__icontains = queryset)
+                ).distinct()
+            else:
+                context["tickets"] = Ticket.objects.all()
+        except:
+            if queryset: 
+                context["tickets"] = Ticket.objects.filter(
+                    Q(title__icontains = queryset) |
+                    Q(slug__icontains = queryset)
+                ).distinct()
+            else:
+                context["tickets"] = Ticket.objects.all()
+        
         return context

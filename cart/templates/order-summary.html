@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="h-100 h-custom">
+<section class="h-100 h-custom" style="background-image:url('https://images.wallpaperscraft.com/image/single/concert_party_performance_138075_1920x1080.jpg');">
     <div class="container py-5 h-100">
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-lg-8 col-xl-6">
           <div class="card border-top border-bottom border-3" style="border-color: rgb(255, 193, 7) !important;">
             <div class="card-body p-5" style="background-color: #f2f2f2;">
   
-              <p class="lead fw-bold mb-5">Recibo de compra</p>
-  
+              <p style="text-align: center;" class="lead fw-bold mb-5">Acme Concerts | Recibo de compra</p>
+
               <div class="row">
                 <div class="col mb-3">
                   <p class="small text-muted mb-1">Fecha</p>
@@ -98,8 +98,8 @@
                 </div>
               </div>
   
-              <p class="mt-4 pt-2 mb-0">¿Necesitas ayuda? <a href="#!" style="color: rgb(255, 193, 7);">Contacta con nosotros</a></p>
-  
+              <p style="text-align: center;" class="mt-4 pt-2 mb-0">¿Necesitas ayuda? <a href="#!" style="color: rgb(255, 193, 7);">Contacta con nosotros</a></p>
+              <p style="text-align: center;"> Te hemos enviado a <a href="https://gmail.com">{{user.email}}</a> los datos de la compra</p>
             </div>
           </div>
         </div>

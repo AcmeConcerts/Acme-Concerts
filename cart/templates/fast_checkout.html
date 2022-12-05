@@ -69,8 +69,13 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 {% if billing_addresses != null %}
                     {% for billing_address in billing_addresses %}
-                        <a class="dropdown-item">{{billing_address.main_address}}</a>
+                    <button id="{{forloop.counter0}}" onclick="fillForm(this.id)" class="dropdown-item">{{billing_address.main_address}}</button>
+                    <span class="info_billing_address" class="text-muted" firstname = "{{billing_address.firstname}}"
+                    lastname = "{{billing_address.lastname}}" main_address= "{{billing_address.main_address}}" optional_address = "{{billing_address.optional_address}}"
+                    country = "{{billing_address.country}}" city = "{{billing_address.city}}" cp="{{billing_address.cp}}"></span>   
                     {% endfor %}
+                    <div class="dropdown-divider"></div>
+                    <button onclick="clearForm()" class="dropdown-item">Nueva dirección</button>
                 {% endif %}
             </div>
         </li>
@@ -172,6 +177,53 @@
     calculate_total_price()
     
     document.getElementById("T").checked = true;
+    let span = document.getElementsByClassName("info_billing_address")
+    function fillForm(id){
+        let firstname = span[id].getAttribute("firstname")
+        let lastname = span[id].getAttribute("lastname")
+        let main_address = span[id].getAttribute("main_address")
+        let optional_address = span[id].getAttribute("optional_address")
+        let country = span[id].getAttribute("country")
+        let city = span[id].getAttribute("city")
+        let cp = span[id].getAttribute("cp")
+        let save_info = document.getElementById("id_save_info")
+
+        document.forms["form"]["firstname"].value = firstname;
+        document.forms["form"]["lastname"].value = lastname;
+        document.forms["form"]["main_address"].value = main_address;
+        document.forms["form"]["optional_address"].value = optional_address;
+        document.forms["form"]["country"].value = country;
+        document.forms["form"]["city"].value = city;
+        document.forms["form"]["cp"].value = cp;
+        save_info.checked = true;
+
+        document.forms["form"]["firstname"].disabled = true
+        document.forms["form"]["lastname"].disabled = true
+        document.forms["form"]["main_address"].disabled = true
+        document.forms["form"]["optional_address"].disabled = true
+        document.forms["form"]["country"].disabled = true
+        document.forms["form"]["city"].disabled = true
+        document.forms["form"]["cp"].disabled = true
+        save_info.disabled = true
+    }
+    
+    function clearForm(){
+        document.forms["form"]["firstname"].value = "";
+        document.forms["form"]["lastname"].value = "";
+        document.forms["form"]["main_address"].value = "";
+        document.forms["form"]["optional_address"].value = "";
+        document.forms["form"]["country"].value = "";
+        document.forms["form"]["city"].value = "";
+        document.forms["form"]["cp"].value = "";
+        
+        document.forms["form"]["firstname"].disabled = false
+        document.forms["form"]["lastname"].disabled = false
+        document.forms["form"]["main_address"].disabled = false
+        document.forms["form"]["optional_address"].disabled = false
+        document.forms["form"]["country"].disabled = false
+        document.forms["form"]["city"].disabled = false
+        document.forms["form"]["cp"].disabled = false
+    }
 
     function validateForm() {
         let firstname = document.forms["form"]["firstname"].value;
