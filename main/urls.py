@@ -14,6 +14,8 @@ urlpatterns = [
     path('rock', views.products_rock, name='rock'),
     path('add-to-cart/<slug>/', views.add_to_cart, name='add-to-cart'),
     path('remove-from-cart/<slug>/', views.remove_from_cart, name='remove-from-cart'),
-
+    path('privacidad', views.privacidad, name='privacidad'),
+    path('terminos_servicio', views.terminos_servicio, name='terminos_servicio'),
+    path('politica-devoluciones', views.devoluciones, name='politica-devoluciones'),
 
 ]
