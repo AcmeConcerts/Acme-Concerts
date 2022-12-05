@@ -4,3 +4,12 @@ __pycache__/
 .pyc
 main/migrations/__pycache__/__init__.cpython-310.pyc
 main/migrations/__pycache__/0001_initial.cpython-310.pyc
+AcmeConcerts/__pycache__/__init__.cpython-310.pyc
+
+AcmeConcerts/__pycache__/settings.cpython-310.pyc
+AcmeConcerts/__pycache__/urls.cpython-310.pyc
+main/__pycache__/__init__.cpython-310.pyc
+AcmeConcerts/__pycache__/wsgi.cpython-310.pyc
+main/__pycache__/urls.cpython-310.pyc
+main/__pycache__/views.cpython-310.pyc
+

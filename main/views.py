@@ -73,12 +73,13 @@ def add_to_cart(request, slug):
     order_qs, order_created = Order.objects.get_or_create(user=request.user, ordered=False)
     
 
-    order_ticket, created = OrderTicket.objects.get_or_create( #Si lo encuentra, created deberia ser false
+    order_ticket, created = OrderTicket.objects.get_or_create( 
+        #Si lo encuentra, created deberia ser false
         ticket=ticket,
         user=request.user,
         ordered=False,
         order=order_qs,
-        customized=False
+        customized=False,
     )
 
     # check if the order item is in the order
@@ -87,6 +88,8 @@ def add_to_cart(request, slug):
         order_ticket.save()
         messages.info(request, "Cantidad de este ticket actualizada.")
     else: #Si no estaba se abrá creado, simplemente guardamos
+        ticket.stock -=1
+        ticket.save()
         order_ticket.save()
         messages.info(request, "Añadido al carro.")
 

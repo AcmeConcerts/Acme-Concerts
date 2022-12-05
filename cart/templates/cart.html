@@ -32,11 +32,15 @@
                           class="img-fluid" style="object-fit: cover; width: 150px;height: 100px;"  alt="Generic placeholder image">
                         </a></th>
                       <td style="text-align: center; vertical-align: middle;" >{{ ticket.ticket.title }}</td>
-                      <td style="text-align: center; vertical-align: middle;">
+                      
                         {% if ticket.customized  %}
-                          Sí
+                          <td style="text-align: right: vertical-align:middle;">
+                            <p>Modelo: {{ticket.get_model_display}}</p>
+                            <p>Color: {{ticket.get_color_display}}</p>
+                            <p>Tipografía: {{ticket.get_typing_display}}</p>
                         {% else %}
-                          No
+                          <td style="text-align: center; vertical-align: middle;">
+                            No
                         {% endif %}
                         </td>
                       <td style="text-align: center; vertical-align: middle;">

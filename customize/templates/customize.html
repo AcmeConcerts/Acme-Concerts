@@ -47,27 +47,37 @@
 
           <p>{{ object.description }}</p>
 
-          <form class="d-flex justify-content-left">
-            <a class="btn btn-warning btn-md my-0 p" href="/customize/{{object.price_customized}}">
-              Personalizar entrada
-              <iconify-icon inline icon="bi:ticket-detailed-fill"></iconify-icon>
-            </a> 
-            &nbsp
-            <!-- Default input -->
-            <button class="btn btn-primary btn-md my-0 p" type="submit">
-              Añadir al carrito
-              <i class="fas fa-shopping-cart ml-1"></i>
-            </button>
-
-          </form>
-          
-
         </div>
         <!--Content-->
 
       </div>
       <!--Grid column-->
+      <form action="{{object.get_customized_add_to_cart_url}}" method="POST" class="justify-content-left">
+        {% csrf_token %}
+        <div class="row row-cols-3">
+          <div class="col mb-3">
+            <label for="model" class="form-label mx-2">Modelo</label>
+            {{ form.model }}
+          </div>
+          <div class="col mb-3">
+            <label for="color" class="form-label mx-2">Color</label>
+            {{ form.color }}
+          </div>
+          <div class="col mb-3">
+            <label for="typing" class="form-label mx-2">Tipografía</label>
+            {{ form.typing }}
+          </div>
+        </div>
 
+        <div class="row row-cols-1">
+          <div class="col text-center"> 
+            <button class="btn btn-primary btn-md my-0 p" type="submit">
+              Añadir al carrito
+              <i class="fas fa-shopping-cart ml-1"></i>
+            </button>
+          </div> 
+        </div>
+      </form>
     </div>
     <!--Grid row-->
 
@@ -82,8 +92,18 @@
         <h4 class="my-4 h4">Información adicional</h4>
 
         <p>
-          ¿Tienes algún familiar o amigo al que no sabes que regalar? Aprovecha y personaliza una entrada con las herramientas
-          que ponemos a tu disposición.</p>
+          Disponemos de 3 estilos de personalización de entradas.
+          La entrada por defecto cuenta con el nombre del concierto y artista junto con los datos del concierto.
+          Los demás estilos de entrada incluyen las imágenes de cartelera del concierto así como todos los datos.
+        </p>
+        <img src="/resources/images/tickets/Ejemplo_entrada.png" alt="Ticket example" class="img-fluid">
+        <div class="mt-3">
+          <p>
+            ¿Tienes algún familiar o amigo al que no sabes que regalar? Aprovecha y personaliza una entrada con las herramientas
+            que ponemos a tu disposición.
+          </p>
+        </div>
+        
         <small class="text-secondary">Las entradas pueden ser adquiridas por el precio estandar en caso de no personalizarse.</small>
 
       </div>
