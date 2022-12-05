@@ -54,6 +54,12 @@ def products_rock(request):
 def devoluciones(request):
     return render(request, "politica_devoluciones.html")
 
+def contacto(request):
+    return render(request, "atencion_cliente.html")
+
+def contacto(request):
+    return render(request, "politica_envios.html")
+
 def privacidad(request):
     context = {
         "MEDIA_URL" : settings.MEDIA_URL,
