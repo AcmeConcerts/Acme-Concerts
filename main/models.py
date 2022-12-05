@@ -48,10 +48,11 @@ class Ticket(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField(default= timezone.now())
     ordered = models.BooleanField(default = False)
+    billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.user.username
@@ -70,8 +71,9 @@ class OrderTicket(models.Model):
     ('1', 'Modelo 1'), ('2', 'Modelo 2'), ('3', 'Modelo 3')
     )
 
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,null=True)
     ordered = models.BooleanField(default=False)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
@@ -102,10 +104,10 @@ class BillingAddress(models.Model):
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     main_address = models.CharField(max_length=100)
-    optional_address = models.CharField(max_length=100)
+    optional_address = models.CharField(max_length=100, null=True)
     country = models.CharField(max_length=100,choices=COUNTRY_CHOICES)
     city = models.CharField(max_length=100,choices=CITY_CHOICES)
     cp = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.user.username
+        return f"Direccion de envio de {self.user.username}"

@@ -77,7 +77,7 @@
 
         <div class="row wow fadeIn">
 
-          {% for ticket in object_list %}
+          {% for ticket in tickets %}
           <div class="col-lg-3 col-md-6 mb-4">
 
             <div class="card">
@@ -85,11 +85,11 @@
               <div class="view overlay">
                 {% if ticket.stock == 0 %}
                 <a href="{{ticket.get_absolute_url}}">
-                  <img src="/resources/images/agotado.png" class="card-img-top">
+                  <img src="/resources/images/agotado.png" style="object-fit: cover; width: 305px;height: 200px;"  class="card-img-top">
                 </a>
                 {% else %}
                 <a href="{{ticket.get_absolute_url}}">
-                  <img src="{{MEDIA_URL}}{{ticket.image}}" class="card-img-top">
+                  <img src="{{MEDIA_URL}}{{ticket.image}}" style="object-fit: cover; width: 305px;height: 200px;" class="card-img-top">
                 </a>
                 {% endif %}
               </div>

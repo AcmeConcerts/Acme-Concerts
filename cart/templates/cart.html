@@ -5,7 +5,7 @@
     <div class="container h-100">
       <div class="row d-flex justify-content-center align-items-center h-80">
         <div class="col">
-          <p><span class="h2">Carrito de la compra </span><span class="h4">({{tickets_num}} elemento/s en tu carrito)</span></p>
+          <p><span class="h2">Carrito de la compra </span><span class="h4">({{tickets_num}} ticket/s en tu carrito)</span></p>
 
 
 
@@ -29,7 +29,7 @@
                       <th scope="row">
                         <a href="{{ticket.ticket.get_absolute_url}}">
                           <img src="{{MEDIA_URL}}{{ticket.ticket.image}}"
-                          class="img-fluid" style="width:200px; height:auto; max-height:100px; max-width:150px" alt="Generic placeholder image">
+                          class="img-fluid" style="object-fit: cover; width: 150px;height: 100px;"  alt="Generic placeholder image">
                         </a></th>
                       <td style="text-align: center; vertical-align: middle;" >{{ ticket.ticket.title }}</td>
                       
@@ -44,13 +44,18 @@
                         {% endif %}
                         </td>
                       <td style="text-align: center; vertical-align: middle;">
-                        <input name="{{ ticket.ticket.slug }}" class="quantity" style="text-align: center; width:40px;" type="number" value="{{ ticket.quantity }}" min="1" max="100">
+                        <input name="{{ ticket.ticket.slug }}" class="quantity" style="text-align: center; width:40px;" type="number" value="{{ ticket.quantity }}" min="1" max="{{ ticket.ticket.stock }}">
 
                         <br>
                         <a href="{% url 'main:remove-from-cart' ticket.ticket.slug%}">Eliminar</a>
                         
                       </td>
-                      <td class="price_unit" style="text-align: center; vertical-align: middle;">{{ ticket.ticket.price }}0€</td>
+                      {% if ticket.customized  %}
+                        <td class="price_unit" style="text-align: center; vertical-align: middle;">{{ ticket.ticket.price_customized }}0€</td>
+                      {% else %}
+                        <td class="price_unit" style="text-align: center; vertical-align: middle;">{{ ticket.ticket.price }}0€</td>
+                      {% endif %}
+                      
                       <td class="price" id="{{forloop.counter0}}" style="text-align: center; vertical-align: middle;"></td>
                     </tr>
                   </div>
@@ -68,7 +73,7 @@
               <div class="float-end">
                 <p class="mb-0 me-5 d-flex align-items-center">
                   <span class="small text-muted me-2">Total carrito:</span> 
-                  <span id="total_price" class="lead fw-normal">$799</span>
+                  <span id="total_price" class="lead fw-normal"></span>
                 </p>
               </div>
 
@@ -79,9 +84,15 @@
             <a href="/">
               <button type="button" class="btn btn-light btn-lg me-2" style="  border: 1px solid gray;">
               Continuar Comprando</button></a>
-            <a href="checkout">
-              <button type="button" style="background-color:#ffc107;"class="btn  btn-lg">Terminar pedido</button>
-            </a>
+            {% if tickets_num == 0%}
+              <a>
+                <button disabled type="button" style="background-color:#ffc107;"class="btn  btn-lg">Terminar pedido</button>
+              </a>
+            {% else %}
+              <a href="checkout">
+                <button type="button" style="background-color:#ffc107;"class="btn  btn-lg">Terminar pedido</button>
+              </a>
+            {% endif %}
           </div>
 
         </div>

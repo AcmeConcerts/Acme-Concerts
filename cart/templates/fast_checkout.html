@@ -16,10 +16,9 @@
         <div class="col-md-4 order-md-2 mb-4">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">Tu carrito</span>
-            <span class="badge badge-secondary badge-pill">{{tickets_num}}</span>
+            <span class="badge badge-secondary badge-pill">1</span>
         </h4>
         <ul class="list-group mb-3">
-            {% for ticket in tickets %}
             <li class="list-group-item d-flex justify-content-between lh-condensed">
             
             <div>
@@ -33,7 +32,6 @@
             {% endif %}
             
             </li>
-            {% endfor %}
             
             <!--<li class="list-group-item d-flex justify-content-between bg-light">
             <div class="text-success">
@@ -62,6 +60,7 @@
 
         <div class="col-md-8 order-md-1">
         <h4 style="display: inline-block;" class="mb-3">Dirección de envío</h4>
+        {%if authenticated%}
         <p style="display: inline-block;margin-left:270px;" class="mb-3">Utilizar dirección: </p>
         <li style="display: inline-block;" style="list-style-type: none;" class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -70,16 +69,17 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 {% if billing_addresses != null %}
                     {% for billing_address in billing_addresses %}
-                        <button id="{{forloop.counter0}}" onclick="fillForm(this.id)" class="dropdown-item">{{billing_address.main_address}}</button>
-                        <span class="info_billing_address" class="text-muted" firstname = "{{billing_address.firstname}}"
-                        lastname = "{{billing_address.lastname}}" main_address= "{{billing_address.main_address}}" optional_address = "{{billing_address.optional_address}}"
-                        country = "{{billing_address.country}}" city = "{{billing_address.city}}" cp="{{billing_address.cp}}"></span>                    
+                    <button id="{{forloop.counter0}}" onclick="fillForm(this.id)" class="dropdown-item">{{billing_address.main_address}}</button>
+                    <span class="info_billing_address" class="text-muted" firstname = "{{billing_address.firstname}}"
+                    lastname = "{{billing_address.lastname}}" main_address= "{{billing_address.main_address}}" optional_address = "{{billing_address.optional_address}}"
+                    country = "{{billing_address.country}}" city = "{{billing_address.city}}" cp="{{billing_address.cp}}"></span>   
                     {% endfor %}
                     <div class="dropdown-divider"></div>
                     <button onclick="clearForm()" class="dropdown-item">Nueva dirección</button>
                 {% endif %}
             </div>
         </li>
+        {%endif%}
 
         <form name="form" id="checkout-form"method="POST">
             {% csrf_token %}
@@ -118,55 +118,19 @@
                 <label for="zip">Código Postal</label>
                 {{ form.cp }}
             </div>
-
-            <!-- BILLING ADDRESS -->
-            <br>
-            <div id="div_billing_address" style="display:none;">
-                <h4 style="display: inline-block;" class="mb-3">Dirección de facturación</h4>
-                    
-                <div class="mb-3">
-                <label for="address">Dirección</label>
-                    <input id="billing_address" type="text" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                <label for="address2">Detalles adicionales <span class="text-muted">(Opcional)</span></label>
-                    <input type="text"  class="form-control">        
-                </div>
-
-                <div class="row">
-                    <div class="col-md-5 mb-3">
-                        <label for="country">País</label>
-                        <select class="custom-select d-block w-100">
-                            <option>España</option>
-                          </select>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="state">Ciudad</label>
-                        <select class="custom-select d-block w-100">
-                            <option value="S">Sevilla</option>
-                            <option value="A">Almería</option>                         
-                            <option value="H">Huelva</option>                         
-                            <option value="G">Granada</option>
-                            <option value="C">Cádiz</option>   
-                            <option value="CO">Córdoba</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="zip">Código Postal</label>
-                        <input id="billing_zip" type="text" class="form-control" required>
-                    </div>
-                </div>
             </div>
             <hr class="mb-4">
+
             <div class="custom-control custom-checkbox">
             {{ form.same_billing_address }}
             <label class="custom-control-label" for="same-address">Mi dirección de envío es la misma que mi dirección de facturación</label>
             </div>
-            <div class="custom-control custom-checkbox">
-                {{ form.save_info }}
-            <label class="custom-control-label" for="save-info">Guardar información para futuras compras</label>
-            </div>
+            {%if authenticated%}
+                <div class="custom-control custom-checkbox">
+                    {{ form.save_info }}
+                <label class="custom-control-label" for="save-info">Guardar información para futuras compras</label>
+                </div>
+            {%endif%}
             <hr class="mb-4">
 
             <h4 class="mb-3">Métodos de pago</h4>
@@ -193,7 +157,6 @@
         <input style="background-color: #0783ca" id="submit-button" class="btn btn-success btn-lg btn-block" type="button" value="Pagar" />
 
         </form>
-    </div>
         </div>
     </div>
 
@@ -214,28 +177,7 @@
     calculate_total_price()
     
     document.getElementById("T").checked = true;
-    billing_address = document.getElementById("id_same_billing_address")
-    billing_address.checked = true;
-    billing_address.addEventListener('click', function(e){
-        if (billing_address.checked == true){
-            div_billing_address.style.display = 'none';
-        }
-        else{
-            div_billing_address.style.display = 'block';
-        }
-        });
     let span = document.getElementsByClassName("info_billing_address")
-    div_billing_address = document.getElementById("div_billing_address")
-    document.getElementById("id_save_info").checked = true
-
-    function fillBillingForm(){
-        let address = document.getElementById("billing_address")
-        let zip = document.getElementById("billing_zip")
-
-        address.value =  document.forms["form"]["main_address"].value
-        zip.value = document.forms["form"]["cp"].value
-    }
-
     function fillForm(id){
         let firstname = span[id].getAttribute("firstname")
         let lastname = span[id].getAttribute("lastname")
@@ -288,8 +230,6 @@
         let lastname = document.forms["form"]["lastname"].value;
         let main_address = document.forms["form"]["main_address"].value;
         let cp = document.forms["form"]["cp"].value;
-        let billing_dir = document.getElementById("billing_address").value
-        let billing_zip = document.getElementById("billing_zip").value
 
         if (firstname == "") {
             alert("Por favor complete el campo 'Nombre'");
@@ -306,17 +246,6 @@
         if (cp == "") {
             alert("Por favor complete el campo 'Codigo Postal'");
             return false;
-        }
-
-        if (billing_address.checked == false){
-            if (billing_dir == "") {
-            alert("Por favor complete el campo 'Direccion' en la sección Facturación");
-            return false;
-            }
-            if (billing_zip == "") {
-            alert("Por favor complete el campo 'Código postal' en la sección Facturación");
-            return false;
-            }
         }
 
         return true;
@@ -370,50 +299,48 @@
             card_option = $('#T').is(":checked")
             instance.requestPaymentMethod(function (err, payload) {
                 if(validateForm()){
-                    if(billing_address.checked == true){
-                        fillBillingForm()}
-                        if (card_option){
-                            $.ajax({
-                                type: 'POST',
-                                url: '{% url "payment" %}',
-                                data: {'paymentMethodNonce': payload.nonce,
-                                        'csrfmiddlewaretoken': '{{ csrf_token }}',
-                                        'firstname' : $('#id_firstname').val(),
-                                        'lastname' : $('#id_lastname').val(),
-                                        'main_address' : $('#id_main_address').val(),
-                                        'optional_address' : $('#id_optional_address').val(),
-                                        'country' : $('#id_country').val(),
-                                        'city' : $('#id_city').val(),
-                                        'cp' : $('#id_cp').val(),
-                                        'save_info' : $('#id_save_info').is(":checked"),
-                                        'payment_option' : $('#T').is(":checked"),
-                                        'order_id': {{order_id}}
-                                    }
-                            }).done(function (result) {
-                                window.location.href = "/cart/order-summary/{{order_id}}";
-                        });
-                        }
-                        else{
-                            $.ajax({
-                                type: 'POST',
-                                url: '{% url "payment" %}',
-                                data: {
-                                        'csrfmiddlewaretoken': '{{ csrf_token }}',
-                                        'firstname' : $('#id_firstname').val(),
-                                        'lastname' : $('#id_lastname').val(),
-                                        'main_address' : $('#id_main_address').val(),
-                                        'optional_address' : $('#id_optional_address').val(),
-                                        'country' : $('#id_country').val(),
-                                        'city' : $('#id_city').val(),
-                                        'cp' : $('#id_cp').val(),
-                                        'save_info' : $('#id_save_info').is(":checked"),
-                                        'payment_option' : $('#T').is(":checked"),
-                                        'order_id': {{order_id}}
-                                    }
-                            }).done(function (result) {
-                                window.location.href = "/cart/order-summary/{{order_id}}";
-                        });  
+                    if (card_option){
+                        $.ajax({
+                            type: 'POST',
+                            url: '{% url "payment" %}',
+                            data: {'paymentMethodNonce': payload.nonce,
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                    'firstname' : $('#id_firstname').val(),
+                                    'lastname' : $('#id_lastname').val(),
+                                    'main_address' : $('#id_main_address').val(),
+                                    'optional_address' : $('#id_optional_address').val(),
+                                    'country' : $('#id_country').val(),
+                                    'city' : $('#id_city').val(),
+                                    'cp' : $('#id_cp').val(),
+                                    'save_info' : $('#id_save_info').is(":checked"),
+                                    'payment_option' : $('#T').is(":checked"),
+                                    'order_id': {{order_id}}
+                                }
+                        }).done(function (result) {
+                            window.location.href = "/cart/order-summary/{{order_id}}";
+                    });
                     }
+                    else{
+                        $.ajax({
+                            type: 'POST',
+                            url: '{% url "payment" %}',
+                            data: {
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                    'firstname' : $('#id_firstname').val(),
+                                    'lastname' : $('#id_lastname').val(),
+                                    'main_address' : $('#id_main_address').val(),
+                                    'optional_address' : $('#id_optional_address').val(),
+                                    'country' : $('#id_country').val(),
+                                    'city' : $('#id_city').val(),
+                                    'cp' : $('#id_cp').val(),
+                                    'save_info' : $('#id_save_info').is(":checked"),
+                                    'payment_option' : $('#T').is(":checked"),
+                                    'order_id': {{order_id}}
+                                }
+                        }).done(function (result) {
+                            window.location.href = "/cart/order-summary/{{order_id}}";
+                    });
+                }
                 }
             });
         });
