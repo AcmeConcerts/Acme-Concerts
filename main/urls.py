@@ -18,4 +18,5 @@ urlpatterns = [
     path('terminos_servicio', views.terminos_servicio, name='terminos_servicio'),
     path('politica-devoluciones', views.devoluciones, name='politica-devoluciones'),
     path('contacto', views.contacto, name='contacto'),
+    path('politica-envios', views.contacto, name='politica-envios'),
 ]
