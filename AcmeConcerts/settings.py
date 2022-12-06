@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-sr+w*!4w_*q*2*eu4mshb8s+5unhbtezub=_!#gu(kgf=7ur8*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["acmeconcerts.pythonanywhere.com"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -159,8 +159,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'resources')
 
 MEDIA_URL = '/resources/'
 
-#STATIC_ROOT = os.path.join(BASE_DIR, 'main/static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'main/static/')
 #STATIC_URL = '/main/static/'
+
 
 if (len(sys.argv) >= 2 and sys.argv[1] == 'runserver'):
     BRAINTREE_PRODUCTION = False
