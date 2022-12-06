@@ -163,10 +163,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'main/static/')
 #STATIC_URL = '/main/static/'
 
 
-if (len(sys.argv) >= 2 and sys.argv[1] == 'runserver'):
-    BRAINTREE_PRODUCTION = False
-else:
-    BRAINTREE_PRODUCTION = True
+BRAINTREE_PRODUCTION = False
+
 
 BRAINTREE_MERCHANT_ID = "bpgn992c5cnbr77p"
 BRAINTREE_PUBLIC_KEY = "r385pxds52d79dh7"
