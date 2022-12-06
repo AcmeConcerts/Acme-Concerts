@@ -181,20 +181,21 @@ def payment(request):
             tickets = OrderTicket.objects.filter(order=order)
             country_dic = dict((v, k) for v, k in COUNTRY_CHOICES)
             city_dic = dict((v, k) for v,k in CITY_CHOICES) 
-            message = 'Enhorabuena, has realizado una compra en Acme Concerts. Te adjuntamos la factura de compra de tu pedido. ¡Ahora solo queda disfrutar!\n\n'
+            message = 'Enhorabuena, has realizado una compra en Acme Concerts. Te adjuntamos la factura de compra de tu pedido con id ' + str(order.id) +  '. ¡Ahora solo queda disfrutar!\n\n'
             total_price = 0.
             
             for ticket in tickets:
                 price = ticket.ticket.price * float(ticket.quantity)
                 total_price += price
                 message += ticket.ticket.title + "             Cantidad: " + str(ticket.quantity) + "             Precio: " + str(price) + "\n"
-            message+= "El importe total es de: " + str(total_price) + "0€\n"
+            message+= "El importe total es de: " + str(total_price) + "0€\n|n "
             if (order.billing_address.optional_address != ""):
                 message+= "Tus entradas serán enviadas a " + order.billing_address.main_address + " más especificamente a" + order.billing_address.optional_address + " en " + city_dic.get(order.billing_address.city) +" con codigo postal " + order.billing_address.cp + ", " + country_dic.get(order.billing_address.country)
             
             else:
                 message+= "Tus entradas serán enviadas a " + order.billing_address.main_address + " en " + city_dic.get(order.billing_address.city) +" con codigo postal " + order.billing_address.cp + ", " + country_dic.get(order.billing_address.country)
 
+            message += "\nPuedes conocer el estado de tu pedido a traves del enlace: http://acmeconcerts.pythonanywhere.com/cart/order-summary/" + str(order.id) + "/. Para cualquier duda puedes contactar con nosotros a través del apartado Contacto. "
             mail = EmailMessage(
                 'Compra realizada',
                 message,
