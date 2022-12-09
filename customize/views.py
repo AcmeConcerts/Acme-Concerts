@@ -39,7 +39,7 @@ def add_customized_to_cart(request, slug):
         color = request.POST.get('color'),
         typing = request.POST.get('typing'),
         customized=True,
-        quantity = request.POST.get('quantity')
+        quantity = quantity
     )
 
      # check if the order item is in the order
