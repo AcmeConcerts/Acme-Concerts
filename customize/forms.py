@@ -12,4 +12,5 @@ class CustomizeForm(forms.Form):
     typing = forms.ChoiceField(choices=models.OrderTicket.TYPING, label='Tipografía', widget=forms.Select(attrs={
         'class': 'form-select w-100'
     }))
+    quantity = forms.IntegerField()
     

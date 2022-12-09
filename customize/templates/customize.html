@@ -69,9 +69,13 @@
           </div>
         </div>
 
-        <div class="row row-cols-1">
+        <div class="row row-cols-2">
           <div class="col text-center"> 
-            <button class="btn btn-primary btn-md my-0 p" type="submit">
+            <strong> ¿Cuantas entradas? </strong>
+              <input name="quantity" class="quantity" style="text-align: center; width:40px;" type="number" value="1" min="1" max="{{ ticket.stock }}">
+          </div>
+          <div class='col text-center'>
+              <button class="btn btn-primary btn-md my-0 p" type="submit">
               Añadir al carrito
               <i class="fas fa-shopping-cart ml-1"></i>
             </button>
