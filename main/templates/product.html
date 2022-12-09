@@ -47,30 +47,49 @@
 
           <p>{{ object.description }}</p>
 
-          <form class="d-flex justify-content-left">
+          <form action="{{ ticket.get_add_to_cart_url }}" method="POST" class="justify-content-left">
+            {% csrf_token %}
             {%if object.stock == 0%}
-            <a class="btn btn-danger btn-md my-0 p">
-              ENTRADAS AGOTADAS
-              <iconify-icon icon="bi:dash-circle-fill"></iconify-icon>
-            </a>
+              <a class="btn btn-danger btn-md my-0 p">
+                ENTRADAS AGOTADAS
+                <iconify-icon icon="bi:dash-circle-fill"></iconify-icon>
+              </a>
             {% else %}
-            <a class="btn btn-warning btn-md my-0 p" href="/customize/{{ticket.slug}}">
-              Personalizar entrada
-              <iconify-icon inline icon="bi:ticket-detailed-fill"></iconify-icon>
-            </a> 
-            &nbsp
-            <!-- Default input -->
-            <a href="{{object.get_add_to_cart_url}}" class="btn btn-primary btn-md my-0 p" type="submit">
-              Añadir al carrito
-              <i class="fas fa-shopping-cart ml-1"></i>
-            </a>
-            &nbsp
-            <a href="/cart/fast-checkout/{{object.slug}}" class="btn btn-danger btn-md my-0 p" type="submit">
-              Compra rápida
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-fill" viewBox="0 0 16 16">
-                <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"/>
-              </svg>
-            </a>
+              <div class="row-cols-2 d-flex justify-content-center align-items-center g-2 my-2">
+                <div class="col mx-1">
+                  <strong> ¿Cuantas entradas? </strong>
+                  <input name="quantity" class="quantity" style="text-align: center; width:40px;" type="number" value="1" min="1" max="{{ ticket.stock }}">
+                </div>
+                <div class="col mx-1">
+                  <button class="btn btn-primary btn-md my-0 p" type='submit'>
+                    Añadir al carrito
+                    </i class="fas fa-shopping-cart ml-1">
+                  </button>
+                </div>
+              </div>
+              <div class="row-cols-2 d-flex justify-content-center align-items-center g-2 my-2">
+                <div class="col mx-1">
+                  {% if user.is_authenticated %}
+                    <a class="btn btn-warning btn-md my-0 p" href="/customize/{{ticket.slug}}">
+                      Personalizar entrada
+                      <iconify-icon inline icon="bi:ticket-detailed-fill"></iconify-icon>
+                    </a> 
+                  {% else %}
+                    <a class="btn btn-danger btn-md my-0 p" href="/accounts/login">
+                      Para personalizar la entrada, debe iniciar sesión
+                      <iconify-icon icon="bi:dash-circle-fill"></iconify-icon>
+                      </a>
+                  {% endif %}
+                </div>
+                <div class="col mx-1">
+                  <a href="/cart/fast-checkout/{{object.slug}}" class="btn btn-danger btn-md my-0 p" type="submit">
+                    Compra rápida
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-fill" viewBox="0 0 16 16">
+                      <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641l2.5-8.5z"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
             {% endif %}
           </form>
 

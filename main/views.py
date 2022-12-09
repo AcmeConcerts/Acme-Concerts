@@ -3,6 +3,8 @@ from django.shortcuts import render,redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, View
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+
+from AcmeConcerts import forms
 from .models import *
 from django.contrib import messages
 from django.db.models import Q
@@ -75,6 +77,11 @@ def terminos_servicio(request):
 @login_required
 def add_to_cart(request, slug):
     ticket = get_object_or_404(Ticket, slug=slug)
+    quantity = 1
+
+    if request.method == 'POST':
+        form = forms.QuantityForm(request.method)
+        quantity = int(request.POST.get('quantity'))
 
     order_qs, order_created = Order.objects.get_or_create(user=request.user, ordered=False)
     
@@ -86,16 +93,18 @@ def add_to_cart(request, slug):
         ordered=False,
         order=order_qs,
         customized=False,
+        quantity= quantity
     )
 
     # check if the order item is in the order
     if not created:
-        order_ticket.quantity += 1
+        order_ticket.quantity += quantity
         order_ticket.save()
         messages.info(request, "Cantidad de este ticket actualizada.")
     else: #Si no estaba se abrá creado, simplemente guardamos
-        ticket.stock -=1
+        ticket.stock -= quantity
         ticket.save()
+
         order_ticket.save()
         messages.info(request, "Añadido al carro.")
 
@@ -144,6 +153,7 @@ class TicketDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["MEDIA_URL"] = settings.MEDIA_URL
         context["tickets"] = Ticket.objects.all()[:3]
+        context['form'] = forms.QuantityForm()
         return context
 
 class HomeView(ListView):

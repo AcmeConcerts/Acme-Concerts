@@ -44,3 +44,9 @@ class CheckoutForm(forms.Form):
 
     payment_option = forms.ChoiceField(widget=forms.RadioSelect(), choices= PAYMENT_CHOICES)
  
+
+
+
+
+class QuantityForm(forms.Form):
+    quantity = forms.IntegerField(widget=forms.IntegerField())
