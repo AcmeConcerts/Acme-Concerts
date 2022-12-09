@@ -22,6 +22,7 @@ def add_customized_to_cart(request, slug):
 
     if request.method == 'POST':
         form = forms.CustomizeForm(request.method)
+        quantity = int(request.POST.get('quantity'))
 
     ticket = get_object_or_404(Ticket, slug=slug)
 
@@ -38,8 +39,21 @@ def add_customized_to_cart(request, slug):
         color = request.POST.get('color'),
         typing = request.POST.get('typing'),
         customized=True,
-        quantity = request.POST.get('quantity')
+        quantity = quantity
     )
+
+     # check if the order item is in the order
+    if not created:
+        order_ticket.quantity += quantity
+        order_ticket.save()
+        messages.info(request, "Cantidad de este ticket actualizada.")
+    else: #Si no estaba se abrá creado, simplemente guardamos
+        ticket.stock -= quantity
+        ticket.save()
+
+        order_ticket.save()
+        messages.info(request, "Añadido al carro.")
+
 
 
 
