@@ -48,7 +48,7 @@ def products_hiphop(request):
 
 def products_rock(request):
     context = {
-        'items': Ticket.objects.filter(category = 'r'),
+        'items': Ticket.objects.filter(category = 'R'),
         "MEDIA_URL" : settings.MEDIA_URL,
         "categoria" : "Rock" 
     }
