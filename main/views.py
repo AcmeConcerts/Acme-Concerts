@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 from AcmeConcerts import forms
+from cart.views import fast_checkout
 from .models import *
 from django.contrib import messages
 from django.db.models import Q
@@ -76,6 +77,8 @@ def terminos_servicio(request):
 
 @login_required
 def add_to_cart(request, slug):
+    if "fast-checkout" in request.POST:
+        return fast_checkout(request,slug)
     ticket = get_object_or_404(Ticket, slug=slug)
     quantity = 1
 
@@ -93,7 +96,7 @@ def add_to_cart(request, slug):
         ordered=False,
         order=order_qs,
         customized=False,
-        quantity= quantity
+
     )
 
     # check if the order item is in the order
@@ -102,12 +105,12 @@ def add_to_cart(request, slug):
         order_ticket.save()
         messages.info(request, "Cantidad de este ticket actualizada.")
     else: #Si no estaba se abrá creado, simplemente guardamos
-        ticket.stock -= quantity
-        ticket.save()
-
+        order_ticket.quantity = quantity
         order_ticket.save()
         messages.info(request, "Añadido al carro.")
 
+    ticket.stock -= quantity
+    ticket.save()
 
     return redirect("main:ticket", slug=slug)
 
@@ -129,6 +132,8 @@ def remove_from_cart(request, slug):
                 user=request.user,
                 ordered=False
             )[0]
+            ticket.stock+=ordered_ticket.quantity
+            ticket.save()
             ordered_ticket.delete()
             messages.info(request, "El ticket ha sido borrado.")
             return redirect("cart")

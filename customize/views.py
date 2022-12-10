@@ -38,9 +38,9 @@ def add_customized_to_cart(request, slug):
         model = request.POST.get('model'),
         color = request.POST.get('color'),
         typing = request.POST.get('typing'),
-        customized=True,
-        quantity = quantity
+        customized=True
     )
+
 
      # check if the order item is in the order
     if not created:
@@ -48,13 +48,14 @@ def add_customized_to_cart(request, slug):
         order_ticket.save()
         messages.info(request, "Cantidad de este ticket actualizada.")
     else: #Si no estaba se abrá creado, simplemente guardamos
-        ticket.stock -= quantity
-        ticket.save()
+        order_ticket.quantity = quantity
 
+        
         order_ticket.save()
         messages.info(request, "Añadido al carro.")
 
-
+    ticket.stock -= quantity
+    ticket.save()
 
 
     return redirect("main:ticket", slug=slug)

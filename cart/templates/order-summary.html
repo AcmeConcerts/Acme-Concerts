@@ -27,7 +27,12 @@
                     <p>{{ticket.ticket.title}} | {{ticket.quantity}} entrada/s</p>
                   </div>
                   <div class="col-md-4 col-lg-3">
+                    {% if ticket.customized  %}
+                    <p class="ticket" quantity="{{ticket.quantity}}">{{ticket.ticket.price_customized}}0 €</p>
+                    {% else %}
                     <p class="ticket" quantity="{{ticket.quantity}}">{{ticket.ticket.price}}0 €</p>
+                    {% endif %}
+                    
                   </div>
                 </div>
                 {% endfor %}

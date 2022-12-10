@@ -94,7 +94,7 @@ def fast_checkout(request,slug):
         braintree_env = braintree.Environment.Production
     else:
         braintree_env = braintree.Environment.Sandbox
-
+    quantity = request.POST.get('quantity')
     # Configure Braintree
     braintree.Configuration.configure(
         braintree_env,
@@ -112,7 +112,7 @@ def fast_checkout(request,slug):
 
     ticket = Ticket.objects.get(slug=slug)
     order = Order.objects.create(ordered=False)
-    order_ticket= OrderTicket.objects.create(ticket=ticket,order = order)
+    order_ticket= OrderTicket.objects.create(ticket=ticket,order = order, quantity=quantity)
     
     billing_addresses = []
     if(request.user.is_authenticated):
@@ -185,7 +185,11 @@ def payment(request):
             total_price = 0.
             
             for ticket in tickets:
-                price = ticket.ticket.price * float(ticket.quantity)
+                if ticket.customized:
+                    price = ticket.ticket.price_customized * float(ticket.quantity)
+                else:
+                    price = ticket.ticket.price * float(ticket.quantity)
+
                 total_price += price
                 message += ticket.ticket.title + "             Cantidad: " + str(ticket.quantity) + "             Precio: " + str(price) + "\n"
             message+= "El importe total es de: " + str(total_price) + "0€\n|n "
@@ -221,7 +225,6 @@ class Summary(DetailView):
         order = Order.objects.get(id=id)
         tickets = OrderTicket.objects.filter(order=order)
         for ticket in tickets:
-            ticket.ticket.stock -= ticket.quantity
             ticket.ticket.save()
 
         context = {
