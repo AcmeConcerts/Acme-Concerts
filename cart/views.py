@@ -33,10 +33,13 @@ class CartSummaryView(View):
 
 def CartUpdate(request):
     ticket_slug = request.POST['ticket_slug']
-    number = request.POST['number']
+    number = int(request.POST['number'])
     order = Order.objects.get(user = request.user, ordered = False)
     ticket = Ticket.objects.get(slug= ticket_slug)
     order_ticket = OrderTicket.objects.get(order=order,ticket=ticket)
+    difference = order_ticket.quantity - number
+    ticket.stock += difference
+    ticket.save()
     order_ticket.quantity= number
     order_ticket.save()
     return HttpResponse("Ok")

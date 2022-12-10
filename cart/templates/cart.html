@@ -108,13 +108,20 @@
 
     calculate_total_ticket_price()
     calculate_total_price()
+    set_max_in_inputs()
+    
+    function set_max_in_inputs(){
+      for(var i = 0; i < all_input_quantity.length; i++){
+        all_input_quantity[i].setAttribute("max",parseInt(all_input_quantity[i].getAttribute("max"))+parseInt(all_input_quantity[i].getAttribute("value")))
+      }
+
+    }
 
     function calculate_total_ticket_price(){
       for(var i = 0; i < all_input_quantity.length; i++) {
         quantity = all_input_quantity[i].value;
         price_unit = all_td_price_unit[i].textContent.substring(0,5);
         price = document.getElementById(i);
-
         price.textContent = quantity * price_unit + ".00€";
       }
     }
@@ -133,7 +140,11 @@
       if(this.value< this.getAttribute("min")){
         alert("La cantidad de tickets debe ser mínimo "+this.getAttribute("min"));
         this.value=1
-      }else if(this.value> this.getAttribute("max")){
+      }else if(parseInt(this.value)> parseInt(this.getAttribute("max"))){
+        console.log("value")
+        console.log(this.value)
+        console.log("max")
+        console.log(this.getAttribute("max"))
         alert("La cantidad de tickets debe ser máximo "+this.getAttribute("max")); 
         this.value=this.getAttribute("max")
       }else{

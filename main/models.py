@@ -55,7 +55,11 @@ class Order(models.Model):
     billing_address = models.ForeignKey('BillingAddress', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.user.username
+        try:
+            return self.user.username
+        except:
+            return "Anónimo"
+        
 
 
 class OrderTicket(models.Model):
