@@ -177,7 +177,7 @@ class HomeView(ListView):
             if queryset: 
                 context["tickets"] = Ticket.objects.filter(
                     Q(title__icontains = queryset) |
-                    Q(category__icontains = category_reverse[queryset.capitalize()]) |
+                    Q(category = category_reverse[queryset.capitalize()]) |
                     Q(slug__icontains = queryset)
                 ).distinct()
             else:
